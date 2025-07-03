@@ -141,7 +141,7 @@ class SubscriptionRepository(private val apiService: ApiService) {
             _error.value = null
             val updatedSubscription = apiService.toggleSubscriptionActive(id)
             if (updatedSubscription != null) {
-                println("✅ Repository: Toggled subscription ID: $id, new active state: ${updatedSubscription.active}")
+                println("✅ Repository: Toggled subscription ID: $id, new active state: ${updatedSubscription.isActive}")
                 _subscriptions.value = _subscriptions.value.map { 
                     if (it.id == id) updatedSubscription else it 
                 }

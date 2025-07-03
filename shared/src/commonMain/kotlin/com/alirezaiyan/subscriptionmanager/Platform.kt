@@ -1,7 +1,9 @@
 package com.alirezaiyan.subscriptionmanager
 
-interface Platform {
-    val name: String
+import io.ktor.client.HttpClient
+
+expect class Platform() {
+    val platform: String
 }
 
-expect fun getPlatform(): Platform
+expect fun createHttpClient(): HttpClient

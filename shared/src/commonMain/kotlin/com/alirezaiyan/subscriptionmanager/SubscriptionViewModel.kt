@@ -1,20 +1,26 @@
 package com.alirezaiyan.subscriptionmanager
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 
 class SubscriptionViewModel(
-    private val repository: SubscriptionRepository
-) : ViewModel() {
+    private val repository: SubscriptionRepository,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
+) {
 
     val subscriptions: StateFlow<List<Subscription>> = repository.subscriptions
     val totals: StateFlow<SubscriptionTotals> = repository.totals
     val isLoading: StateFlow<Boolean> = repository.isLoading
     val error: StateFlow<String?> = repository.error
+
+    // Add dialog state
+    private val _showAddDialog = MutableStateFlow(false)
+    val showAddDialog: StateFlow<Boolean> = _showAddDialog.asStateFlow()
 
     init {
         println("📱 SubscriptionViewModel initialized")
@@ -23,22 +29,34 @@ class SubscriptionViewModel(
 
     fun loadSubscriptions() {
         println("🔄 ViewModel: Loading subscriptions")
-        viewModelScope.launch {
+        coroutineScope.launch {
             repository.loadSubscriptions()
         }
     }
 
     fun loadActiveSubscriptions() {
         println("🔄 ViewModel: Loading active subscriptions")
-        viewModelScope.launch {
+        coroutineScope.launch {
             repository.loadActiveSubscriptions()
         }
     }
 
     fun searchSubscriptions(query: String) {
         println("🔍 ViewModel: Searching subscriptions with query: '$query'")
-        viewModelScope.launch {
+        coroutineScope.launch {
             repository.searchSubscriptions(query)
+        }
+    }
+
+    fun addSubscription(subscription: Subscription) {
+        println("➕ ViewModel: Adding subscription - Name: ${subscription.name}, Price: ${subscription.price}, Frequency: ${subscription.frequency}")
+        coroutineScope.launch {
+            val success = repository.createSubscription(subscription)
+            if (success) {
+                println("✅ ViewModel: Successfully created subscription")
+            } else {
+                println("❌ ViewModel: Failed to create subscription")
+            }
         }
     }
 
@@ -49,13 +67,13 @@ class SubscriptionViewModel(
         frequency: SubscriptionFrequency
     ) {
         println("➕ ViewModel: Creating subscription - Name: $name, Amount: $amount, Frequency: $frequency")
-        viewModelScope.launch {
+        coroutineScope.launch {
             val subscription = Subscription(
                 name = name,
                 description = description,
-                amount = amount,
+                price = amount,
                 frequency = frequency,
-                startDate = java.time.Instant.now().toString(),
+                startDate = getCurrentTimestamp(),
                 monthlyAmount = if (frequency == SubscriptionFrequency.MONTHLY) amount else amount / 12.0,
                 yearlyAmount = if (frequency == SubscriptionFrequency.YEARLY) amount else amount * 12.0
             )
@@ -70,7 +88,7 @@ class SubscriptionViewModel(
 
     fun updateSubscription(subscription: Subscription) {
         println("✏️ ViewModel: Updating subscription ID: ${subscription.id}")
-        viewModelScope.launch {
+        coroutineScope.launch {
             val success = repository.updateSubscription(subscription)
             if (success) {
                 println("✅ ViewModel: Successfully updated subscription")
@@ -82,7 +100,7 @@ class SubscriptionViewModel(
 
     fun toggleSubscriptionActive(id: Long) {
         println("🔄 ViewModel: Toggling subscription active state for ID: $id")
-        viewModelScope.launch {
+        coroutineScope.launch {
             val success = repository.toggleSubscriptionActive(id)
             if (success) {
                 println("✅ ViewModel: Successfully toggled subscription")
@@ -94,7 +112,7 @@ class SubscriptionViewModel(
 
     fun deleteSubscription(id: Long) {
         println("🗑️ ViewModel: Deleting subscription ID: $id")
-        viewModelScope.launch {
+        coroutineScope.launch {
             val success = repository.deleteSubscription(id)
             if (success) {
                 println("✅ ViewModel: Successfully deleted subscription")
@@ -107,5 +125,17 @@ class SubscriptionViewModel(
     fun clearError() {
         println("🧹 ViewModel: Clearing error")
         repository.clearError()
+    }
+
+    fun showAddDialog() {
+        _showAddDialog.value = true
+    }
+
+    fun hideAddDialog() {
+        _showAddDialog.value = false
+    }
+
+    private fun getCurrentTimestamp(): String {
+        return Clock.System.now().toString()
     }
 } 

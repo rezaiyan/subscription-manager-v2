@@ -16,13 +16,15 @@ data class Subscription(
     val id: Long = 0,
     val name: String,
     val description: String? = null,
-    val amount: Double,
+    @SerialName("amount")
+    val price: Double,
     val frequency: SubscriptionFrequency,
     @SerialName("startDate")
     val startDate: String,
     @SerialName("nextBillingDate")
     val nextBillingDate: String? = null,
-    val active: Boolean = true,
+    @SerialName("active")
+    val isActive: Boolean = true,
     @SerialName("createdAt")
     val createdAt: String? = null,
     @SerialName("monthlyAmount")

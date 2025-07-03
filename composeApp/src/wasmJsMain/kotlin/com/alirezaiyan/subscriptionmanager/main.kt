@@ -6,7 +6,11 @@ import kotlinx.browser.document
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    ComposeViewport(document.body!!) {
-        App()
+    try {
+        ComposeViewport(document.body!!) {
+            App()
+        }
+    } catch (e: Exception) {
+        // Handle error silently for WASM
     }
 }

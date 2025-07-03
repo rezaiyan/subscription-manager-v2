@@ -41,7 +41,7 @@ class SubscriptionManagerApp : Application() {
 
 @Composable
 actual fun App() {
-    val viewModel: SubscriptionViewModel = org.koin.androidx.compose.koinViewModel()
+    val viewModel: SubscriptionViewModel = org.koin.java.KoinJavaComponent.get(SubscriptionViewModel::class.java)
     val context = LocalContext.current
     val networkMonitor: NetworkMonitor = remember { NetworkMonitor(context) }
     var showNetworkInfo by remember { mutableStateOf(false) }

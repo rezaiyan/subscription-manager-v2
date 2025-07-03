@@ -1,9 +1,9 @@
 package com.alirezaiyan.subscriptionmanager
 
 class Greeting {
-    private val platform = getPlatform()
+    private val platform = Platform()
 
     fun greet(): String {
-        return "Hello, ${platform.name}!"
+        return "Hello, ${platform.platform}!"
     }
 }

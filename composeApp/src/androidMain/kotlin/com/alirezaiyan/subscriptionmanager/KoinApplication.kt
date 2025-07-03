@@ -22,6 +22,6 @@ class KoinApplication : Application() {
         }
         
         // Initialize lifecycle management
-        ApiServiceLifecycle(this).start()
+        ApiServiceLifecycle().start()
     }
 } 

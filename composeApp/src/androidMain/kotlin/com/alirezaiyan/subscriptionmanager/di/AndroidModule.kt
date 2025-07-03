@@ -7,6 +7,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.util.Log
 import com.alirezaiyan.subscriptionmanager.ApiService
+import com.alirezaiyan.subscriptionmanager.ApiServiceAndroid
 import com.alirezaiyan.subscriptionmanager.SubscriptionRepository
 import com.alirezaiyan.subscriptionmanager.SubscriptionViewModel
 import org.koin.android.ext.koin.androidContext
@@ -14,8 +15,8 @@ import org.koin.dsl.module
 
 val androidModule = module {
     single { NetworkMonitor(androidContext()) }
-    // Use shared ApiService, SubscriptionRepository, and SubscriptionViewModel
-    single { ApiService() }
+    // Use Android-specific ApiService implementation
+    single<ApiService> { ApiServiceAndroid() }
     single { SubscriptionRepository(get()) }
     single { SubscriptionViewModel(get()) }
 }

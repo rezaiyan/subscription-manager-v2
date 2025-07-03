@@ -14,8 +14,8 @@ import io.ktor.http.contentType
 class ApiServiceAndroid : ApiService {
     private val client = createHttpClient()
 
-    // Use localhost for local development
-    private val baseUrl = "http://localhost:3000/api"
+    // Use 10.0.2.2 for Android emulator to access host machine
+    private val baseUrl = "http://10.0.2.2:3000/api"
 
     init {
         println("🔗 Android ApiService initialized with baseUrl: $baseUrl")

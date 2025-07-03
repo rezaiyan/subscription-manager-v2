@@ -9,11 +9,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# List of Docker Compose service ports and their default mappings
-DOCKER_PORTS=(8761 8888 3001 3000 8080)
-DOCKER_SERVICES=(eureka-server config-server create-subscription-service subscription-manager api-gateway)
-PORT_OVERRIDES=()
-OVERRIDE_FILE="docker-compose.override.ports.yml"
+# Configuration for the subscription manager services
 
 # Function to find a free port
 find_free_port() {
@@ -25,8 +21,7 @@ find_free_port() {
     echo $port
 }
 
-# Initialize Docker Compose command (will be updated after local services start)
-DOCKER_COMPOSE_CMD="docker-compose"
+
 
 # Function to check if a port is available and kill processes if needed
 check_port() {
@@ -119,8 +114,16 @@ if ! docker info >/dev/null 2>&1; then
         attempt=$((attempt + 1))
     done
     echo -e "\n${GREEN}Docker is now running!${NC}"
+    # Give Docker a moment to fully initialize
+    sleep 5
 else
     echo -e "${GREEN}Docker is running${NC}"
+fi
+
+# Verify Docker Compose is available
+if ! docker-compose --version >/dev/null 2>&1; then
+    echo -e "${RED}Docker Compose is not available. Please install Docker Compose and try again.${NC}"
+    exit 1
 fi
 
 # Check all required ports
@@ -143,17 +146,22 @@ if [ "$port_issues" = true ]; then
     sleep 3
 fi
 
-# Stop and remove all running containers
-echo -e "${BLUE}Stopping any running containers...${NC}"
-$DOCKER_COMPOSE_CMD down
+# Stop only our specific services if they're running, without affecting other Docker containers
+echo -e "${BLUE}Stopping any running subscription manager containers...${NC}"
+if docker-compose ps | grep -q "subscription-manager\|api-gateway\|eureka-server\|config-server\|create-subscription-service"; then
+    docker-compose stop api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
+    docker-compose rm -f api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
+else
+    echo -e "${GREEN}No subscription manager containers running${NC}"
+fi
 
 # Build Docker images (if needed)
 echo -e "${BLUE}Building Docker images...${NC}"
-$DOCKER_COMPOSE_CMD build
+docker-compose build api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
 
 # Start infrastructure services first
 echo -e "${BLUE}Starting infrastructure services...${NC}"
-$DOCKER_COMPOSE_CMD up -d zookeeper postgres-main postgres-create kafka
+docker-compose up -d zookeeper postgres-main postgres-create kafka
 
 # Wait for infrastructure to be ready
 echo -e "${BLUE}Waiting for infrastructure services to be ready...${NC}"
@@ -195,41 +203,11 @@ echo "Main Server PID: $SERVER_PID"
 # Wait for Main Server to be ready
 wait_for_service "http://localhost:3000/actuator/health" "Main Server"
 
-# Check for port overlaps and prepare override file for Docker services
-echo -e "${BLUE}Checking for Docker Compose port overlaps...${NC}"
-OVERRIDE_NEEDED=false
-cat > $OVERRIDE_FILE <<EOF
-version: '3.8'
-services:
-EOF
-for i in "${!DOCKER_PORTS[@]}"; do
-    port=${DOCKER_PORTS[$i]}
-    service=${DOCKER_SERVICES[$i]}
-    if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
-        new_port=$(find_free_port $port)
-        if [ "$new_port" != "$port" ]; then
-            echo -e "${YELLOW}Port $port for $service is in use. Remapping Docker Compose $service to $new_port -> $port${NC}"
-            OVERRIDE_NEEDED=true
-            cat >> $OVERRIDE_FILE <<EOF
-  $service:
-    ports:
-      - "$new_port:$port"
-EOF
-            PORT_OVERRIDES+=("$service:$new_port")
-        fi
-    fi
-done
-
-if [ "$OVERRIDE_NEEDED" = true ]; then
-    echo -e "${YELLOW}Using $OVERRIDE_FILE for Docker Compose port overrides.${NC}"
-    DOCKER_COMPOSE_CMD="docker-compose -f docker-compose.yml -f $OVERRIDE_FILE"
-else
-    rm -f $OVERRIDE_FILE
-fi
+# Note: Port checking is already done above, so we can proceed with starting services
 
 # Start API Gateway
 echo -e "${BLUE}Starting API Gateway...${NC}"
-$DOCKER_COMPOSE_CMD up -d api-gateway
+docker-compose up -d api-gateway
 
 # Wait for API Gateway to be ready
 wait_for_service "http://localhost:8080/actuator/health" "API Gateway"
@@ -256,7 +234,7 @@ echo -e "  • Config Server: ${GREEN}http://localhost:8888${NC}"
 echo -e "  • Create Subscription Service: ${GREEN}http://localhost:3001${NC}"
 echo -e "  • Main Server: ${GREEN}http://localhost:3000${NC}"
 echo -e "  • API Gateway: ${GREEN}http://localhost:8080${NC}"
-echo -e "  • Website: ${GREEN}http://localhost:8080 (via API Gateway)${NC}"
+echo -e "  • Website: ${GREEN}http://localhost:8081${NC}"
 
 echo -e "${BLUE}Log files are available in the logs/ directory${NC}"
 echo -e "${YELLOW}Press Ctrl+C to stop all services${NC}"

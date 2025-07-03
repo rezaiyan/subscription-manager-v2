@@ -41,6 +41,7 @@ kotlin {
                 // Disable minification for easier debugging
                 mode = KotlinWebpackConfig.Mode.DEVELOPMENT
                 devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    port = 8081
                     static = (static ?: mutableListOf()).apply {
                         // Serve sources to debug inside browser
                         add(rootDirPath)

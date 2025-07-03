@@ -103,7 +103,7 @@ actual fun App() {
                                 text = "🔧 Network Debug Info:",
                                 style = MaterialTheme.typography.titleSmall
                             )
-                            Text("• Target Server: 192.168.178.100:3000")
+                            Text("• Target Server: localhost:3000")
                             Text("• Network Available: ${networkMonitor.isNetworkAvailable()}")
                             Text("• Network Type: ${networkMonitor.getNetworkType()}")
                             Text("• App Package: ${context.packageName}")

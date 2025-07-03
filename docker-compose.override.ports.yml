@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  eureka-server:
+    ports:
+      - "18761:8761"
+  config-server:
+    ports:
+      - "18888:8888"
+  create-subscription-service:
+    ports:
+      - "13001:3001"
+  subscription-manager:
+    ports:
+      - "13000:3000"

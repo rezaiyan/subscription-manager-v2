@@ -1,0 +1,245 @@
+Starting a Gradle Daemon, 3 busy and 1 incompatible and 6 stopped Daemons could not be reused, use --status for details
+Calculating task graph as configuration cache cannot be reused because file 'composeApp/build.gradle.kts' has changed.
+Type-safe project accessors is an incubating feature.
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:processResources UP-TO-DATE
+
+> Task :server:compileKotlin
+w: file:///Users/ali.rezaiyan/AndroidStudioProjects/Subscription%20Manager/server/src/main/kotlin/com/github/rezaiyan/subscriptionmanager/SubscriptionManagerApplication.kt:43:76 Condition is always 'false'.
+
+> Task :server:compileJava NO-SOURCE
+> Task :server:classes UP-TO-DATE
+> Task :server:resolveMainClassName
+
+> Task :server:bootRun
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.6)
+
+2025-07-03 23:12:56.361 [main] INFO  c.g.r.s.SubscriptionManagerApplicationKt - Starting SubscriptionManagerApplicationKt using Java 21.0.6 with PID 34959 (/Users/ali.rezaiyan/AndroidStudioProjects/Subscription Manager/server/build/classes/kotlin/main started by ali.rezaiyan in /Users/ali.rezaiyan/AndroidStudioProjects/Subscription Manager/server)
+2025-07-03 23:12:56.362 [main] DEBUG c.g.r.s.SubscriptionManagerApplicationKt - Running with Spring Boot v3.2.6, Spring v6.1.8
+2025-07-03 23:12:56.362 [main] INFO  c.g.r.s.SubscriptionManagerApplicationKt - No active profile set, falling back to 1 default profile: "default"
+2025-07-03 23:12:56.707 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-03 23:12:56.768 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 58 ms. Found 1 JPA repository interface.
+2025-07-03 23:12:56.856 [main] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=adbf1f4b-8acb-37b4-824c-6435b2499a2b
+2025-07-03 23:12:56.976 [main] WARN  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [lbRestClientPostProcessor] is declared through a non-static factory method on that class; consider declaring it as static instead.
+2025-07-03 23:12:56.978 [main] WARN  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'deferringLoadBalancerInterceptor' of type [org.springframework.cloud.client.loadbalancer.DeferringLoadBalancerInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2025-07-03 23:12:57.093 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 3000 (http)
+2025-07-03 23:12:57.098 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-3000"]
+2025-07-03 23:12:57.099 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-07-03 23:12:57.099 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.24]
+2025-07-03 23:12:57.124 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-07-03 23:12:57.124 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 745 ms
+2025-07-03 23:12:57.202 [main] DEBUG o.s.w.f.ServerHttpObservationFilter - Filter 'webMvcObservationFilter' configured for use
+2025-07-03 23:12:57.253 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-03 23:12:57.274 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.4.8.Final
+2025-07-03 23:12:57.288 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-07-03 23:12:57.370 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-03 23:12:57.380 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-07-03 23:12:57.437 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@18dafd3b
+2025-07-03 23:12:57.438 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-07-03 23:12:57.461 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-03 23:12:57.738 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-03 23:12:57.784 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-03 23:12:58.017 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-03 23:12:58.202 [main] DEBUG o.s.k.a.KafkaListenerAnnotationBeanPostProcessor - No retry topic configuration found for topics [subscription-created]
+2025-07-03 23:12:58.212 [main] DEBUG o.s.k.a.KafkaListenerAnnotationBeanPostProcessor - 1 @KafkaListener methods processed on bean 'kafkaEventListener': {public void com.github.rezaiyan.subscriptionmanager.KafkaEventListener.handleSubscriptionCreatedEvent(com.github.rezaiyan.subscriptionmanager.SubscriptionCreatedEvent)=[@org.springframework.kafka.annotation.KafkaListener(topicPattern="", containerFactory="kafkaListenerContainerFactory", beanRef="__listener", contentTypeConverter="", topics={"subscription-created"}, groupId="subscription-manager-group", batch="", topicPartitions={}, clientIdPrefix="", splitIterables=true, concurrency="", autoStartup="", filter="", containerGroup="", idIsGroup=true, errorHandler="", containerPostProcessor="", id="", properties={}, info="")]}
+2025-07-03 23:12:58.251 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-03 23:12:58.297 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 12 mappings in 'requestMappingHandlerMapping'
+2025-07-03 23:12:58.346 [main] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-07-03 23:12:58.363 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-07-03 23:12:58.378 [main] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-07-03 23:12:58.541 [main] INFO  o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration - Eureka HTTP Client uses RestTemplate.
+2025-07-03 23:12:58.564 [main] WARN  o.s.c.l.c.LoadBalancerCacheAutoConfiguration$LoadBalancerCaffeineWarnLogger - Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2025-07-03 23:12:58.568 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
+2025-07-03 23:12:58.610 [main] INFO  o.s.c.n.eureka.InstanceInfoFactory - Setting initial instance status as: STARTING
+2025-07-03 23:12:58.648 [main] INFO  c.netflix.discovery.DiscoveryClient - Initializing Eureka in region us-east-1
+2025-07-03 23:12:58.649 [main] INFO  c.n.d.s.r.aws.ConfigClusterResolver - Resolving eureka endpoints via configuration
+2025-07-03 23:12:58.658 [main] INFO  c.netflix.discovery.DiscoveryClient - Disable delta property : false
+2025-07-03 23:12:58.658 [main] INFO  c.netflix.discovery.DiscoveryClient - Single vip registry refresh property : null
+2025-07-03 23:12:58.658 [main] INFO  c.netflix.discovery.DiscoveryClient - Force full registry fetch : false
+2025-07-03 23:12:58.658 [main] INFO  c.netflix.discovery.DiscoveryClient - Application is null : false
+2025-07-03 23:12:58.658 [main] INFO  c.netflix.discovery.DiscoveryClient - Registered Applications size is zero : true
+2025-07-03 23:12:58.658 [main] INFO  c.netflix.discovery.DiscoveryClient - Application version is -1: true
+2025-07-03 23:12:58.658 [main] INFO  c.netflix.discovery.DiscoveryClient - Getting all instance registry info from the eureka server
+2025-07-03 23:12:58.732 [main] DEBUG o.s.web.client.RestTemplate - HTTP GET http://localhost:8761/eureka/apps/
+2025-07-03 23:12:58.767 [main] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-03 23:12:58.792 [main] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-03 23:12:58.793 [main] DEBUG o.s.web.client.RestTemplate - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2025-07-03 23:12:58.801 [main] INFO  c.netflix.discovery.DiscoveryClient - The response status is 200
+2025-07-03 23:12:58.801 [main] INFO  c.netflix.discovery.DiscoveryClient - Starting heartbeat executor: renew interval is: 30
+2025-07-03 23:12:58.802 [main] INFO  c.n.discovery.InstanceInfoReplicator - InstanceInfoReplicator onDemand update allowed rate per min is 4
+2025-07-03 23:12:58.804 [main] INFO  c.netflix.discovery.DiscoveryClient - Discovery Client initialized at timestamp 1751577178804 with initial instances count: 0
+2025-07-03 23:12:58.806 [main] INFO  o.s.c.n.e.s.EurekaServiceRegistry - Registering application SUBSCRIPTION-MANAGER with eureka with status UP
+2025-07-03 23:12:58.807 [main] INFO  c.netflix.discovery.DiscoveryClient - Saw local status change event StatusChangeEvent [timestamp=1751577178807, current=UP, previous=STARTING]
+2025-07-03 23:12:58.807 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.netflix.discovery.DiscoveryClient - DiscoveryClient_SUBSCRIPTION-MANAGER/mac.fritz.box:subscription-manager:3000: registering service...
+2025-07-03 23:12:58.807 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-3000"]
+2025-07-03 23:12:58.808 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - HTTP POST http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER
+2025-07-03 23:12:58.809 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-03 23:12:58.812 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 3000 (http) with context path ''
+2025-07-03 23:12:58.813 [main] INFO  o.s.c.n.e.s.EurekaAutoServiceRegistration - Updating port to 3000
+2025-07-03 23:12:58.813 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Writing [InstanceInfo [instanceId = mac.fritz.box:subscription-manager:3000, appName = SUBSCRIPTION-MANAGER, hostName = 192.168.178.100, status = UP, ipAddr = 192.168.178.100, port = 3000, securePort = 443, dataCenterInfo = com.netflix.appinfo.MyDataCenterInfo@69f564ab] as "application/json"
+2025-07-03 23:12:58.825 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Response 204 NO_CONTENT
+2025-07-03 23:12:58.825 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.netflix.discovery.DiscoveryClient - DiscoveryClient_SUBSCRIPTION-MANAGER/mac.fritz.box:subscription-manager:3000 - registration status: 204
+2025-07-03 23:12:58.853 [main] INFO  o.a.k.c.consumer.ConsumerConfig - ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.include.jmx.reporter = true
+	auto.offset.reset = earliest
+	bootstrap.servers = [localhost:9092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-subscription-manager-group-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = subscription-manager-group
+	group.instance.id = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.springframework.kafka.support.serializer.JsonDeserializer
+
+2025-07-03 23:12:58.855 [main] DEBUG o.s.k.c.DefaultKafkaConsumerFactory$ExtendedKafkaConsumer - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Initializing the Kafka consumer
+2025-07-03 23:12:58.888 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka version: 3.6.2
+2025-07-03 23:12:58.888 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka commitId: c4deed513057c94e
+2025-07-03 23:12:58.888 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1751577178888
+2025-07-03 23:12:58.889 [main] DEBUG o.s.k.c.DefaultKafkaConsumerFactory$ExtendedKafkaConsumer - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Kafka consumer initialized
+2025-07-03 23:12:58.889 [main] INFO  o.s.k.c.DefaultKafkaConsumerFactory$ExtendedKafkaConsumer - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Subscribed to topic(s): subscription-created
+2025-07-03 23:12:58.892 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-03 23:12:58.899 [main] INFO  c.g.r.s.SubscriptionManagerApplicationKt - Started SubscriptionManagerApplicationKt in 2.671 seconds (process running for 2.872)
+2025-07-03 23:12:58.901 [main] INFO  c.g.r.s.SubscriptionManagerApplication - SubscriptionManagerApplication - Starting data loader
+2025-07-03 23:12:58.932 [main] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.active,
+        s1_0.amount,
+        s1_0.created_at,
+        s1_0.description,
+        s1_0.frequency,
+        s1_0.name,
+        s1_0.next_billing_date,
+        s1_0.start_date 
+    from
+        subscription s1_0
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.active,
+        s1_0.amount,
+        s1_0.created_at,
+        s1_0.description,
+        s1_0.frequency,
+        s1_0.name,
+        s1_0.next_billing_date,
+        s1_0.start_date 
+    from
+        subscription s1_0
+2025-07-03 23:12:58.957 [main] INFO  c.g.r.s.SubscriptionManagerApplication - SubscriptionManagerApplication - No subscriptions with null frequency found
+2025-07-03 23:12:58.957 [main] INFO  c.g.r.s.SubscriptionManagerApplication - SubscriptionManagerApplication - Data loading completed. New subscriptions should be created via the microservice.
+2025-07-03 23:12:58.975 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-03 23:12:58.976 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-03 23:12:58.976 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-03 23:12:59.031 [http-nio-3000-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-03 23:12:59.031 [http-nio-3000-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-07-03 23:12:59.031 [http-nio-3000-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2025-07-03 23:12:59.031 [http-nio-3000-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2025-07-03 23:12:59.031 [http-nio-3000-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2025-07-03 23:12:59.032 [http-nio-3000-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@536905ed
+2025-07-03 23:12:59.032 [http-nio-3000-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@1f5faa89
+2025-07-03 23:12:59.032 [http-nio-3000-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-07-03 23:12:59.032 [http-nio-3000-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-07-03 23:12:59.037 [http-nio-3000-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/health", parameters={}
+2025-07-03 23:12:59.044 [http-nio-3000-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/octet-stream" to []
+2025-07-03 23:12:59.053 [http-nio-3000-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json', given [*/*] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2025-07-03 23:12:59.069 [http-nio-3000-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [org.springframework.boot.actuate.health.SystemHealth@46ff5413]
+2025-07-03 23:12:59.075 [http-nio-3000-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-03 23:12:59.076 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-03 23:12:59.076 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-03 23:12:59.076 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-03 23:12:59.227 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-03 23:12:59.227 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-03 23:12:59.228 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-03 23:12:59.480 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-03 23:12:59.480 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-03 23:12:59.481 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected

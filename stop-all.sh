@@ -23,7 +23,7 @@ pkill -f "com.github.rezaiyan.subscriptionmanager" || true
 
 # Kill any processes on our specific ports
 echo -e "${BLUE}Stopping processes on service ports...${NC}"
-for port in 8761 8888 3001 3000 8080; do
+for port in 8761 8888 3001 3000 8080 8081; do
     lsof -ti:$port | xargs kill -9 2>/dev/null || true
 done
 

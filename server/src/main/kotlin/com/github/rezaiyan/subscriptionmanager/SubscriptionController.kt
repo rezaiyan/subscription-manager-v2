@@ -61,14 +61,14 @@ class SubscriptionController(
 
     @PostMapping
     fun createSubscription(@RequestBody subscription: Subscription): ResponseEntity<Subscription> {
-        logger.info("POST /api/subscriptions - Delegating to create subscription service: ${subscription.name}, amount: ${subscription.amount}")
+        logger.info("POST /api/subscriptions - Creating subscription directly: ${subscription.name}, amount: ${subscription.amount}")
         try {
-            // Delegate to the create subscription microservice
-            val response = createSubscriptionServiceClient.createSubscription(subscription)
-            logger.info("POST /api/subscriptions - Create subscription service response: ${response.statusCode}")
-            return response
+            // Create subscription directly in this service
+            val savedSubscription = subscriptionRepository.save(subscription)
+            logger.info("POST /api/subscriptions - Successfully created subscription with ID: ${savedSubscription.id}")
+            return ResponseEntity.ok(savedSubscription)
         } catch (e: Exception) {
-            logger.error("POST /api/subscriptions - Error calling create subscription service: ${e.message}", e)
+            logger.error("POST /api/subscriptions - Error creating subscription: ${e.message}", e)
             return ResponseEntity.status(503).build()
         }
     }

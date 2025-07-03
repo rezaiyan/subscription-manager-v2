@@ -38,6 +38,8 @@ kotlin {
             val projectDirPath = project.projectDir.path
             commonWebpackConfig {
                 outputFileName = "composeApp.js"
+                // Disable minification for easier debugging
+                mode = KotlinWebpackConfig.Mode.DEVELOPMENT
                 devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
                     static = (static ?: mutableListOf()).apply {
                         // Serve sources to debug inside browser

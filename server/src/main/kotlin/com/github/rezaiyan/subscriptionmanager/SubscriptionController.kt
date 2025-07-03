@@ -1,21 +1,30 @@
 package com.github.rezaiyan.subscriptionmanager
 
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
 
 @RestController
 @RequestMapping("/api/subscriptions")
-class SubscriptionController(private val subscriptionRepository: SubscriptionRepository) {
+class SubscriptionController(
+    private val subscriptionRepository: SubscriptionRepository,
+    private val createSubscriptionServiceClient: CreateSubscriptionServiceClient
+) {
+    private val logger = LoggerFactory.getLogger(SubscriptionController::class.java)
 
     @GetMapping
-    fun getAllSubscriptions(): List<Subscription> {
-        return subscriptionRepository.findAll()
+    fun getAllSubscriptions(): ResponseEntity<List<Subscription>> {
+        logger.info("GET /api/subscriptions - Fetching all subscriptions from local database")
+        val subscriptions = subscriptionRepository.findAll()
+        logger.info("GET /api/subscriptions - Found ${subscriptions.size} subscriptions")
+        return ResponseEntity.ok(subscriptions)
     }
 
     @GetMapping("/active")
-    fun getActiveSubscriptions(): List<Subscription> {
-        return subscriptionRepository.findByActiveTrue()
+    fun getActiveSubscriptions(): ResponseEntity<List<Subscription>> {
+        // Get active subscriptions from local database (synced via Kafka events)
+        return ResponseEntity.ok(subscriptionRepository.findByActiveTrue())
     }
 
     @GetMapping("/{id}")
@@ -39,20 +48,29 @@ class SubscriptionController(private val subscriptionRepository: SubscriptionRep
     }
 
     @GetMapping("/totals")
-    fun getSubscriptionTotals(): Map<String, BigDecimal> {
+    fun getSubscriptionTotals(): ResponseEntity<Map<String, BigDecimal>> {
+        // Get totals from local database (synced via Kafka events)
         val monthlyTotal = subscriptionRepository.calculateTotalMonthlyAmount() ?: BigDecimal.ZERO
         val yearlyTotal = subscriptionRepository.calculateTotalYearlyAmount() ?: BigDecimal.ZERO
         
-        return mapOf(
+        return ResponseEntity.ok(mapOf(
             "monthlyTotal" to monthlyTotal,
             "yearlyTotal" to yearlyTotal
-        )
+        ))
     }
 
     @PostMapping
-    fun createSubscription(@RequestBody subscription: Subscription): Subscription {
-        requireNotNull(subscription.frequency) { "Frequency is required" }
-        return subscriptionRepository.save(subscription)
+    fun createSubscription(@RequestBody subscription: Subscription): ResponseEntity<Subscription> {
+        logger.info("POST /api/subscriptions - Delegating to create subscription service: ${subscription.name}, amount: ${subscription.amount}")
+        try {
+            // Delegate to the create subscription microservice
+            val response = createSubscriptionServiceClient.createSubscription(subscription)
+            logger.info("POST /api/subscriptions - Create subscription service response: ${response.statusCode}")
+            return response
+        } catch (e: Exception) {
+            logger.error("POST /api/subscriptions - Error calling create subscription service: ${e.message}", e)
+            return ResponseEntity.status(503).build()
+        }
     }
 
     @PutMapping("/{id}")

@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: subscription-postgres
+    environment:
+      POSTGRES_USER: subscription_user
+      POSTGRES_PASSWORD: subscription_password
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database-setup:/docker-entrypoint-initdb.d
+    networks:
+      - subscription-network
+    restart: unless-stopped
+
+  # Eureka Server
+  eureka-server:
+    build:
+      context: .
+      dockerfile: eureka-server/Dockerfile
+    container_name: subscription-eureka
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_PREFERIPADDRESS: true
+    networks:
+      - subscription-network
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  # Create Subscription Service
+  create-subscription-service:
+    build:
+      context: .
+      dockerfile: create-subscription-service/Dockerfile
+    container_name: subscription-create-service
+    ports:
+      - "3001:3001"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/subscription_create_db
+      SPRING_DATASOURCE_USERNAME: subscription_user
+      SPRING_DATASOURCE_PASSWORD: subscription_password
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_PREFERIPADDRESS: true
+    networks:
+      - subscription-network
+    depends_on:
+      - postgres
+      - eureka-server
+    restart: unless-stopped
+
+  # Main Application
+  main-app:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: subscription-main-app
+    ports:
+      - "3000:3000"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/subscription_main_db
+      SPRING_DATASOURCE_USERNAME: subscription_user
+      SPRING_DATASOURCE_PASSWORD: subscription_password
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_PREFERIPADDRESS: true
+    networks:
+      - subscription-network
+    depends_on:
+      - postgres
+      - eureka-server
+      - create-subscription-service
+    restart: unless-stopped
+
+  # API Gateway (optional)
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: subscription-api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_PREFERIPADDRESS: true
+    networks:
+      - subscription-network
+    depends_on:
+      - eureka-server
+      - main-app
+      - create-subscription-service
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  subscription-network:
+    driver: bridge 

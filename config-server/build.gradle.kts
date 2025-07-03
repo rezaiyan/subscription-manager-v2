@@ -1,9 +1,17 @@
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.kotlinSpring)
-    alias(libs.plugins.kotlinJpa)
     alias(libs.plugins.springBoot)
     alias(libs.plugins.springDependencyManagement)
+}
+
+group = "com.github.rezaiyan.subscriptionmanager"
+version = "0.0.1-SNAPSHOT"
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }
 
 repositories {
@@ -16,35 +24,11 @@ dependencyManagement {
     }
 }
 
-group = "com.github.rezaiyan.subscriptionmanager"
-version = "0.0.1-SNAPSHOT"
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
-}
-
 dependencies {
     implementation(libs.spring.boot.starter.web)
-    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.cloud.config.server)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
-    
-    // Service discovery
-    implementation(libs.spring.cloud.starter.netflix.eureka.client)
-    
-    // Kafka for event-driven communication
-    implementation(libs.spring.kafka)
-    
-    // Actuator for health checks
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-
-    // PostgreSQL dependency
-    runtimeOnly(libs.postgresql)
-
-    // H2 for development and testing
-    implementation(libs.h2)
 
     // Test dependencies
     testImplementation(libs.spring.boot.starter.test) {
@@ -67,15 +51,6 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-// Configure the main class for the application
 springBoot {
-    mainClass.set("com.github.rezaiyan.subscriptionmanager.SubscriptionManagerApplicationKt")
-}
-
-// Task to run the PostgreSQL connection checker
-tasks.register<JavaExec>("checkPostgreSQL") {
-    group = "verification"
-    description = "Checks if PostgreSQL is installed and accessible"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("com.github.rezaiyan.subscriptionmanager.PostgreSQLConnectionChecker")
-}
+    mainClass.set("com.github.rezaiyan.subscriptionmanager.ConfigServerApplicationKt")
+} 

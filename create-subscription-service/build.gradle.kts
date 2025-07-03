@@ -40,11 +40,11 @@ dependencies {
     // Actuator for health checks
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
+    // Validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
     // PostgreSQL dependency
     runtimeOnly(libs.postgresql)
-
-    // H2 for development and testing
-    implementation(libs.h2)
 
     // Test dependencies
     testImplementation(libs.spring.boot.starter.test) {
@@ -67,15 +67,6 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-// Configure the main class for the application
 springBoot {
-    mainClass.set("com.github.rezaiyan.subscriptionmanager.SubscriptionManagerApplicationKt")
-}
-
-// Task to run the PostgreSQL connection checker
-tasks.register<JavaExec>("checkPostgreSQL") {
-    group = "verification"
-    description = "Checks if PostgreSQL is installed and accessible"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("com.github.rezaiyan.subscriptionmanager.PostgreSQLConnectionChecker")
-}
+    mainClass.set("com.github.rezaiyan.subscriptionmanager.CreateSubscriptionServiceApplicationKt")
+} 

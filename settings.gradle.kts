@@ -31,3 +31,7 @@ dependencyResolutionManagement {
 include(":composeApp")
 include(":server")
 include(":shared")
+include(":create-subscription-service")
+include(":eureka-server")
+include(":config-server")
+include(":api-gateway")

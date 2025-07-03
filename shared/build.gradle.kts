@@ -46,6 +46,8 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
             implementation(libs.kotlinxDatetime)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.ktor.clientCore)
         }
         androidMain.dependencies {
             implementation(libs.ktor.clientCore)

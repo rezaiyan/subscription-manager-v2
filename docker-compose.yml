@@ -71,7 +71,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-main:5432/subscription_main_db
       SPRING_DATASOURCE_USERNAME: ali.rezaiyan
       SPRING_DATASOURCE_PASSWORD: password123
-      SPRING_CLOUD_CONFIG_URI: http://config-server:8888 
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8889 
 
   create-subscription-service:
     build:
@@ -89,7 +89,7 @@ services:
       SPRING_DATASOURCE_USERNAME: ali.rezaiyan
       SPRING_DATASOURCE_PASSWORD: password123 
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://host.docker.internal:8761/eureka/
-      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8889
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
 
   config-server:
@@ -97,7 +97,7 @@ services:
       context: .
       dockerfile: config-server/Dockerfile
     ports:
-      - "8888:8888"
+      - "8889:8888"
     depends_on:
       - postgres-main
     environment:
@@ -123,17 +123,17 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - postgres-main
+      - postgres-create
       - eureka-server
       - create-subscription-service
       - config-server
       - kafka
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-main:5432/subscription_main_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-create:5432/subscription_create_db
       SPRING_DATASOURCE_USERNAME: ali.rezaiyan
       SPRING_DATASOURCE_PASSWORD: password123
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://host.docker.internal:8761/eureka/
-      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8889
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
 
   website:

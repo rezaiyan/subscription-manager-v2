@@ -20,7 +20,7 @@ data class Subscription(
     val price: Double,
     val frequency: SubscriptionFrequency,
     @SerialName("startDate")
-    val startDate: String,
+    val startDate: String? = null,
     @SerialName("nextBillingDate")
     val nextBillingDate: String? = null,
     @SerialName("active")

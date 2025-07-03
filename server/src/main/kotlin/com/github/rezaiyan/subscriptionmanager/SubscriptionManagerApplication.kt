@@ -21,11 +21,12 @@ class SubscriptionManagerApplication {
     fun corsConfigurer(): WebMvcConfigurer {
         return object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
-                registry.addMapping("/api/**")
-                    .allowedOrigins("http://localhost:8080", "http://localhost:8081", "http://localhost:3000", "http://localhost:5173")
+                registry.addMapping("/**")
+                    .allowedOrigins("http://localhost:8081")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(true)
+                    .maxAge(3600)
             }
         }
     }

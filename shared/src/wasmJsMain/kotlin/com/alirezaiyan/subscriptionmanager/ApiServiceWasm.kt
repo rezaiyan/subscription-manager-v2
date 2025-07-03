@@ -23,7 +23,7 @@ class ApiServiceWasm : ApiService {
         }
     }
 
-    private val baseUrl = "http://localhost:8080"
+    private val baseUrl = "http://localhost:3000"
 
     init {
         println("🔗 WASM ApiService initialized with baseUrl: $baseUrl")

@@ -135,7 +135,7 @@ check_port 9092 "Kafka" || port_issues=true
 check_port 5432 "PostgreSQL Main" || port_issues=true
 check_port 5433 "PostgreSQL Create" || port_issues=true
 check_port 8761 "Eureka Server" || port_issues=true
-check_port 8888 "Config Server" || port_issues=true
+check_port 8889 "Config Server" || port_issues=true
 check_port 3001 "Create Subscription Service" || port_issues=true
 check_port 3000 "Main Server" || port_issues=true
 check_port 8080 "API Gateway" || port_issues=true
@@ -183,7 +183,7 @@ CONFIG_PID=$!
 echo "Config Server PID: $CONFIG_PID"
 
 # Wait for Config Server to be ready
-wait_for_service "http://localhost:8888/actuator/health" "Config Server"
+wait_for_service "http://localhost:8889/actuator/health" "Config Server"
 
 # Start Create Subscription Service
 echo -e "${BLUE}Starting Create Subscription Service...${NC}"

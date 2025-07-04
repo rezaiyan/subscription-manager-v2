@@ -1,26 +1,82 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Web, Server.
+# Subscription Manager
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+A comprehensive subscription management system built with Kotlin Multiplatform and Spring Boot microservices.
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## Project Structure
 
-* `/server` is for the Ktor server application.
+```
+Subscription Manager/
+├── 📁 server/                    # Backend services (consolidated)
+│   ├── main-service/            # Main subscription manager service
+│   ├── api-gateway/             # API Gateway service
+│   ├── create-subscription-service/ # Subscription creation service
+│   ├── eureka-server/           # Service discovery
+│   └── config-server/           # Configuration server
+├── 📁 composeApp/               # Kotlin Multiplatform frontend
+├── 📁 shared/                   # Shared code between platforms
+├── 📁 iosApp/                   # iOS-specific code
+├── 📁 scripts/                  # Deployment and management scripts
+│   ├── run-all.sh              # Start all services
+│   ├── stop-all.sh             # Stop all services
+│   ├── debug-logs.sh           # View service logs
+│   ├── quick-start.sh          # Quick setup
+│   └── deploy.sh               # Production deployment
+├── 📁 config/                   # Configuration files
+│   ├── docker-compose.yml      # Docker services configuration
+│   ├── docker-compose.prod.yml # Production Docker config
+│   ├── config.env.example      # Environment variables template
+│   └── subscription-manager.service # Systemd service file
+├── 📁 docs/                     # Documentation
+│   ├── README.md               # This file
+│   ├── DEPLOYMENT_GUIDE.md     # Deployment instructions
+│   ├── MICROSERVICE_SETUP.md   # Microservice architecture
+│   └── ...                     # Other documentation
+├── 📁 test-data/               # Test data and fixtures
+├── 📁 logs/                    # Service logs
+├── 📁 database-setup/          # Database initialization scripts
+└── 📁 monitoring/              # Monitoring and observability
+```
 
-* `/shared` is for the code that will be shared between all targets in the project.
-  The most important subfolder is `commonMain`. If preferred, you can add code to the platform-specific folders here too.
+## Quick Start
 
+1. **Start all services:**
+   ```bash
+   ./scripts/run-all.sh
+   ```
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+2. **Stop all services:**
+   ```bash
+   ./scripts/stop-all.sh
+   ```
 
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
+3. **View logs:**
+   ```bash
+   ./scripts/debug-logs.sh
+   ```
 
-You can open the web application by running the `:composeApp:wasmJsBrowserDevelopmentRun` Gradle task.
+## Services
+
+- **Eureka Server**: http://localhost:8761 (Service Discovery)
+- **Config Server**: http://localhost:8888 (Configuration Management)
+- **Create Subscription Service**: http://localhost:3001 (Subscription Creation)
+- **Main Server**: http://localhost:3000 (Main Application)
+- **API Gateway**: http://localhost:8080 (API Gateway)
+- **Frontend**: http://localhost:8081 (Web Application)
+
+## Development
+
+- **Backend**: Kotlin + Spring Boot + Spring Cloud
+- **Frontend**: Kotlin Multiplatform (Compose Multiplatform)
+- **Database**: PostgreSQL
+- **Message Broker**: Apache Kafka
+- **Service Discovery**: Netflix Eureka
+- **Configuration**: Spring Cloud Config
+
+## Architecture
+
+This project follows a microservices architecture with:
+- Service discovery and registration
+- Centralized configuration management
+- Event-driven communication via Kafka
+- API Gateway for routing and security
+- Multi-platform frontend support 

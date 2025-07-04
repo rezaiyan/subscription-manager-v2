@@ -5136,3 +5136,791 @@ where
 2025-07-04 22:05:29.574 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
 2025-07-04 22:05:29.574 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
 2025-07-04 22:05:29.574 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:30.489 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:30.489 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:30.490 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:31.217 [http-nio-3000-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/subscriptions", parameters={}
+2025-07-04 22:05:31.218 [http-nio-3000-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/subscriptions", parameters={}
+2025-07-04 22:05:31.218 [http-nio-3000-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.github.rezaiyan.subscriptionmanager.SubscriptionController#getAllSubscriptions()
+2025-07-04 22:05:31.218 [http-nio-3000-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.github.rezaiyan.subscriptionmanager.SubscriptionController#getAllSubscriptions()
+2025-07-04 22:05:31.219 [http-nio-3000-exec-5] INFO  c.g.r.s.SubscriptionController - GET /api/subscriptions - Fetching all subscriptions from local database
+2025-07-04 22:05:31.219 [http-nio-3000-exec-7] INFO  c.g.r.s.SubscriptionController - GET /api/subscriptions - Fetching all subscriptions from local database
+2025-07-04 22:05:31.221 [http-nio-3000-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.active,
+        s1_0.amount,
+        s1_0.created_at,
+        s1_0.description,
+        s1_0.frequency,
+        s1_0.name,
+        s1_0.next_billing_date,
+        s1_0.start_date 
+    from
+        subscription s1_0
+2025-07-04 22:05:31.221 [http-nio-3000-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.active,
+        s1_0.amount,
+        s1_0.created_at,
+        s1_0.description,
+        s1_0.frequency,
+        s1_0.name,
+        s1_0.next_billing_date,
+        s1_0.start_date 
+    from
+        subscription s1_0
+2025-07-04 22:05:31.224 [http-nio-3000-exec-5] INFO  c.g.r.s.SubscriptionController - GET /api/subscriptions - Found 36 subscriptions
+2025-07-04 22:05:31.224 [http-nio-3000-exec-7] INFO  c.g.r.s.SubscriptionController - GET /api/subscriptions - Found 36 subscriptions
+2025-07-04 22:05:31.224 [http-nio-3000-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-07-04 22:05:31.224 [http-nio-3000-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[Subscription(id=4, name=Adobe Creative Cloud, description=Design Tools, amount=52.99, frequency=MON (truncated)...]
+2025-07-04 22:05:31.224 [http-nio-3000-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-07-04 22:05:31.225 [http-nio-3000-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[Subscription(id=4, name=Adobe Creative Cloud, description=Design Tools, amount=52.99, frequency=MON (truncated)...]
+2025-07-04 22:05:31.225 [http-nio-3000-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-04 22:05:31.225 [http-nio-3000-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-04 22:05:31.239 [http-nio-3000-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/subscriptions/totals", parameters={}
+2025-07-04 22:05:31.239 [http-nio-3000-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.github.rezaiyan.subscriptionmanager.SubscriptionController#getSubscriptionTotals()
+2025-07-04 22:05:31.240 [http-nio-3000-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        sum(case 
+            when s1_0.frequency='MONTHLY' 
+                then s1_0.amount 
+            else (s1_0.amount/12) 
+    end) 
+from
+    subscription s1_0 
+where
+    s1_0.active=true
+2025-07-04 22:05:31.241 [http-nio-3000-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        sum(case 
+            when s1_0.frequency='YEARLY' 
+                then s1_0.amount 
+            else (s1_0.amount*12) 
+    end) 
+from
+    subscription s1_0 
+where
+    s1_0.active=true
+2025-07-04 22:05:31.243 [http-nio-3000-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-07-04 22:05:31.243 [http-nio-3000-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{monthlyTotal=294.1191666666666667, yearlyTotal=3529.43}]
+2025-07-04 22:05:31.243 [http-nio-3000-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-04 22:05:31.247 [http-nio-3000-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/subscriptions/totals", parameters={}
+2025-07-04 22:05:31.248 [http-nio-3000-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.github.rezaiyan.subscriptionmanager.SubscriptionController#getSubscriptionTotals()
+2025-07-04 22:05:31.248 [http-nio-3000-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        sum(case 
+            when s1_0.frequency='MONTHLY' 
+                then s1_0.amount 
+            else (s1_0.amount/12) 
+    end) 
+from
+    subscription s1_0 
+where
+    s1_0.active=true
+2025-07-04 22:05:31.249 [http-nio-3000-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        sum(case 
+            when s1_0.frequency='YEARLY' 
+                then s1_0.amount 
+            else (s1_0.amount*12) 
+    end) 
+from
+    subscription s1_0 
+where
+    s1_0.active=true
+2025-07-04 22:05:31.250 [http-nio-3000-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-07-04 22:05:31.250 [http-nio-3000-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{monthlyTotal=294.1191666666666667, yearlyTotal=3529.43}]
+2025-07-04 22:05:31.251 [http-nio-3000-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-04 22:05:31.299 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:31.299 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:31.299 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:32.132 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:05:32.132 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:05:32.236 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:32.236 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:32.236 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:33.356 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:33.356 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:33.356 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:34.270 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:34.271 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:34.271 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:35.491 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:35.491 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:35.491 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:36.711 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:36.711 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:36.711 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:37.134 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:05:37.135 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:05:37.794 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:37.795 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:37.795 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:38.964 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:38.964 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:38.964 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:39.820 [http-nio-3000-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/subscriptions", parameters={}
+2025-07-04 22:05:39.820 [http-nio-3000-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/subscriptions", parameters={}
+2025-07-04 22:05:39.821 [http-nio-3000-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.github.rezaiyan.subscriptionmanager.SubscriptionController#getAllSubscriptions()
+2025-07-04 22:05:39.822 [http-nio-3000-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.github.rezaiyan.subscriptionmanager.SubscriptionController#getAllSubscriptions()
+2025-07-04 22:05:39.824 [http-nio-3000-exec-10] INFO  c.g.r.s.SubscriptionController - GET /api/subscriptions - Fetching all subscriptions from local database
+2025-07-04 22:05:39.824 [http-nio-3000-exec-1] INFO  c.g.r.s.SubscriptionController - GET /api/subscriptions - Fetching all subscriptions from local database
+2025-07-04 22:05:39.831 [http-nio-3000-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.active,
+        s1_0.amount,
+        s1_0.created_at,
+        s1_0.description,
+        s1_0.frequency,
+        s1_0.name,
+        s1_0.next_billing_date,
+        s1_0.start_date 
+    from
+        subscription s1_0
+2025-07-04 22:05:39.831 [http-nio-3000-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.active,
+        s1_0.amount,
+        s1_0.created_at,
+        s1_0.description,
+        s1_0.frequency,
+        s1_0.name,
+        s1_0.next_billing_date,
+        s1_0.start_date 
+    from
+        subscription s1_0
+2025-07-04 22:05:39.833 [http-nio-3000-exec-1] INFO  c.g.r.s.SubscriptionController - GET /api/subscriptions - Found 36 subscriptions
+2025-07-04 22:05:39.833 [http-nio-3000-exec-10] INFO  c.g.r.s.SubscriptionController - GET /api/subscriptions - Found 36 subscriptions
+2025-07-04 22:05:39.834 [http-nio-3000-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-07-04 22:05:39.834 [http-nio-3000-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-07-04 22:05:39.834 [http-nio-3000-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[Subscription(id=4, name=Adobe Creative Cloud, description=Design Tools, amount=52.99, frequency=MON (truncated)...]
+2025-07-04 22:05:39.834 [http-nio-3000-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[Subscription(id=4, name=Adobe Creative Cloud, description=Design Tools, amount=52.99, frequency=MON (truncated)...]
+2025-07-04 22:05:39.835 [http-nio-3000-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-04 22:05:39.835 [http-nio-3000-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-04 22:05:39.854 [http-nio-3000-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/subscriptions/totals", parameters={}
+2025-07-04 22:05:39.855 [http-nio-3000-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.github.rezaiyan.subscriptionmanager.SubscriptionController#getSubscriptionTotals()
+2025-07-04 22:05:39.855 [http-nio-3000-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        sum(case 
+            when s1_0.frequency='MONTHLY' 
+                then s1_0.amount 
+            else (s1_0.amount/12) 
+    end) 
+from
+    subscription s1_0 
+where
+    s1_0.active=true
+2025-07-04 22:05:39.856 [http-nio-3000-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        sum(case 
+            when s1_0.frequency='YEARLY' 
+                then s1_0.amount 
+            else (s1_0.amount*12) 
+    end) 
+from
+    subscription s1_0 
+where
+    s1_0.active=true
+2025-07-04 22:05:39.857 [http-nio-3000-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-07-04 22:05:39.857 [http-nio-3000-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{monthlyTotal=294.1191666666666667, yearlyTotal=3529.43}]
+2025-07-04 22:05:39.858 [http-nio-3000-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-04 22:05:39.861 [http-nio-3000-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/subscriptions/totals", parameters={}
+2025-07-04 22:05:39.861 [http-nio-3000-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.github.rezaiyan.subscriptionmanager.SubscriptionController#getSubscriptionTotals()
+2025-07-04 22:05:39.862 [http-nio-3000-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        sum(case 
+            when s1_0.frequency='MONTHLY' 
+                then s1_0.amount 
+            else (s1_0.amount/12) 
+    end) 
+from
+    subscription s1_0 
+where
+    s1_0.active=true
+2025-07-04 22:05:39.863 [http-nio-3000-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        sum(case 
+            when s1_0.frequency='YEARLY' 
+                then s1_0.amount 
+            else (s1_0.amount*12) 
+    end) 
+from
+    subscription s1_0 
+where
+    s1_0.active=true
+2025-07-04 22:05:39.863 [http-nio-3000-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-07-04 22:05:39.863 [http-nio-3000-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{monthlyTotal=294.1191666666666667, yearlyTotal=3529.43}]
+2025-07-04 22:05:39.864 [http-nio-3000-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-04 22:05:40.030 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:40.031 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:40.031 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:40.843 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:40.843 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:40.843 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:41.810 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:41.810 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:41.810 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:42.136 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:05:42.137 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:05:42.950 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:42.951 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:42.951 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:44.118 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:44.118 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:44.118 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:45.284 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:45.284 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:45.284 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:46.504 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:46.505 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:46.505 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:47.050 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP PUT http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER/mac.fritz.box:subscription-manager:3000?status=UP&lastDirtyTimestamp=1751659427014
+2025-07-04 22:05:47.050 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP GET http://localhost:8761/eureka/apps/delta
+2025-07-04 22:05:47.050 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:05:47.050 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:05:47.054 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:05:47.054 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:05:47.055 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2025-07-04 22:05:47.138 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:05:47.138 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:05:47.648 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:47.649 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:47.649 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:48.765 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:48.765 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:48.765 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:49.732 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:49.733 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:49.733 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:50.748 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:50.748 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:50.748 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:51.664 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:51.664 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:51.664 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:52.140 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:05:52.140 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:05:52.651 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:52.651 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:52.652 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:53.822 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:53.822 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:53.822 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:54.940 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:54.940 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:54.940 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:56.110 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:56.110 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:56.111 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:57.077 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:57.077 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:57.077 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:57.142 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:05:57.142 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:05:58.093 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:58.093 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:58.093 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:05:59.060 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:05:59.060 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:05:59.060 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:00.076 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:00.076 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:00.076 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:00.991 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:00.992 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:00.992 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:01.908 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:01.908 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:01.908 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:02.144 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:06:02.144 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:02.907 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:02.907 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:02.907 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:03.976 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:03.976 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:03.976 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:04.891 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:04.891 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:04.891 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:06.011 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:06.011 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:06.011 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:06.978 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:06.978 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:06.978 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:07.144 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:06:07.144 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:07.908 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:07.908 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:07.908 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:08.822 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:08.822 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:08.822 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:09.837 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:09.837 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:09.837 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:11.003 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:11.003 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:11.003 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:11.868 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:11.868 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:11.868 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:12.145 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:06:12.145 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:12.908 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:12.908 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:12.909 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:13.724 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:13.724 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:13.724 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:14.844 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:14.845 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:14.845 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:15.710 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:15.710 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:15.710 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:16.623 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:16.623 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:16.623 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:17.060 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP GET http://localhost:8761/eureka/apps/delta
+2025-07-04 22:06:17.060 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:06:17.060 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP PUT http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER/mac.fritz.box:subscription-manager:3000?status=UP&lastDirtyTimestamp=1751659427014
+2025-07-04 22:06:17.060 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:06:17.065 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:06:17.065 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:06:17.065 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2025-07-04 22:06:17.146 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:06:17.146 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:17.452 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:17.452 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:17.452 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:18.673 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:18.673 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:18.673 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:19.689 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:19.690 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:19.690 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:20.605 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:20.605 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:20.605 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:21.775 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:21.775 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:21.775 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:22.147 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:06:22.147 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:22.708 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:22.708 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:22.708 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:23.877 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:23.877 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:23.877 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:25.047 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:25.048 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:25.048 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:26.217 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:26.217 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:26.217 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:27.083 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:27.083 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:27.083 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:27.148 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:06:27.148 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:28.050 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:28.050 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:28.050 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:29.270 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:29.270 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:29.270 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:30.388 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:30.388 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:30.388 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:31.507 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:31.508 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:31.508 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:32.149 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:06:32.150 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:32.506 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:32.507 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:32.507 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:33.470 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:33.471 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:33.471 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:34.590 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:34.590 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:34.590 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:35.556 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:35.556 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:35.556 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:36.471 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:36.471 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:36.471 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:37.152 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:06:37.152 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:37.356 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:37.356 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:37.356 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:38.424 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:38.424 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:38.424 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:39.341 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:39.341 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:39.341 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:40.359 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:40.359 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:40.359 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:41.379 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:41.379 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:41.379 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:42.153 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:06:42.153 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:42.256 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:42.256 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:42.256 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:43.424 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:43.424 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:43.424 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:44.594 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:44.594 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:44.594 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:45.458 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:45.459 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:45.459 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:46.678 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:46.679 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:46.679 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:47.067 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP PUT http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER/mac.fritz.box:subscription-manager:3000?status=UP&lastDirtyTimestamp=1751659427014
+2025-07-04 22:06:47.067 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP GET http://localhost:8761/eureka/apps/delta
+2025-07-04 22:06:47.068 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:06:47.068 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:06:47.073 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:06:47.073 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:06:47.074 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2025-07-04 22:06:47.155 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:06:47.155 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:47.815 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:47.815 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:47.815 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:49.037 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:49.037 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:49.037 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:49.902 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:49.902 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:49.902 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:50.767 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:50.767 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:50.767 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:51.733 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:51.733 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:51.733 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:52.156 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Received: 0 records
+2025-07-04 22:06:52.156 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:52.972 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:52.972 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:52.972 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:54.043 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:54.043 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:54.043 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:55.214 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Node -1 disconnected.
+2025-07-04 22:06:55.214 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available.
+2025-07-04 22:06:55.214 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-07-04 22:06:55.370 [SpringApplicationShutdownHook] INFO  o.s.c.n.e.s.EurekaServiceRegistry - Unregistering application SUBSCRIPTION-MANAGER with eureka with status DOWN
+2025-07-04 22:06:55.370 [SpringApplicationShutdownHook] INFO  c.netflix.discovery.DiscoveryClient - Saw local status change event StatusChangeEvent [timestamp=1751659615370, current=DOWN, previous=UP]
+2025-07-04 22:06:55.370 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.netflix.discovery.DiscoveryClient - DiscoveryClient_SUBSCRIPTION-MANAGER/mac.fritz.box:subscription-manager:3000: registering service...
+2025-07-04 22:06:55.371 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - HTTP POST http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER
+2025-07-04 22:06:55.371 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:06:55.371 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Writing [InstanceInfo [instanceId = mac.fritz.box:subscription-manager:3000, appName = SUBSCRIPTION-MANAGER, hostName = 192.168.178.100, status = DOWN, ipAddr = 192.168.178.100, port = 3000, securePort = 443, dataCenterInfo = com.netflix.appinfo.MyDataCenterInfo@2532e07e] as "application/json"
+2025-07-04 22:06:55.382 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - Commit list: {}
+2025-07-04 22:06:55.382 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Resetting generation and member id due to: consumer pro-actively leaving the group
+2025-07-04 22:06:55.382 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Request joining group due to: consumer pro-actively leaving the group
+2025-07-04 22:06:55.382 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.s.k.c.DefaultKafkaConsumerFactory$ExtendedKafkaConsumer - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Unsubscribed all topics or patterns and assigned partitions
+2025-07-04 22:06:55.382 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Resetting generation and member id due to: consumer pro-actively leaving the group
+2025-07-04 22:06:55.382 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Request joining group due to: consumer pro-actively leaving the group
+2025-07-04 22:06:55.384 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.n.d.s.t.d.RedirectingEurekaHttpClient - Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/} exception=I/O error on POST request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on POST request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:790)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:672)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.register(RestTemplateEurekaHttpClient.java:77)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:91)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:77)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56)
+	at com.netflix.discovery.DiscoveryClient.register(DiscoveryClient.java:820)
+	at com.netflix.discovery.InstanceInfoReplicator.run(InstanceInfoReplicator.java:121)
+	at com.netflix.discovery.InstanceInfoReplicator$1.run(InstanceInfoReplicator.java:101)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:757)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:571)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
+	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:184)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:447)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:96)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:115)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$0(RestTemplateTransportClientFactory.java:143)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
+	... 21 more
+
+2025-07-04 22:06:55.385 [DiscoveryClient-InstanceInfoReplicator-0] WARN  c.n.d.s.t.d.RetryableEurekaHttpClient - Request execution failed with message: I/O error on POST request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused
+2025-07-04 22:06:55.385 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics scheduler closed
+2025-07-04 22:06:55.385 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2025-07-04 22:06:55.385 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics reporters closed
+2025-07-04 22:06:55.387 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.kafka.common.utils.AppInfoParser - App info kafka.consumer for consumer-subscription-manager-group-1 unregistered
+2025-07-04 22:06:55.387 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.c.DefaultKafkaConsumerFactory$ExtendedKafkaConsumer - [Consumer clientId=consumer-subscription-manager-group-1, groupId=subscription-manager-group] Kafka consumer has been closed
+2025-07-04 22:06:55.387 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.s.k.l.KafkaMessageListenerContainer - subscription-manager-group: Consumer stopped
+2025-07-04 22:06:55.388 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - HTTP POST http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER
+2025-07-04 22:06:55.388 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:06:55.389 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] DEBUG o.s.k.l.KafkaMessageListenerContainer - KafkaMessageListenerContainer [id=org.springframework.kafka.KafkaListenerEndpointContainer#0-0, clientIndex=-0, topicPartitions=[]] stopped normally
+2025-07-04 22:06:55.389 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Writing [InstanceInfo [instanceId = mac.fritz.box:subscription-manager:3000, appName = SUBSCRIPTION-MANAGER, hostName = 192.168.178.100, status = DOWN, ipAddr = 192.168.178.100, port = 3000, securePort = 443, dataCenterInfo = com.netflix.appinfo.MyDataCenterInfo@2532e07e] as "application/json"
+2025-07-04 22:06:55.393 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.n.d.s.t.d.RedirectingEurekaHttpClient - Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=I/O error on POST request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on POST request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:790)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:672)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.register(RestTemplateEurekaHttpClient.java:77)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.executeOnNewServer(RedirectingEurekaHttpClient.java:121)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:80)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:77)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56)
+	at com.netflix.discovery.DiscoveryClient.register(DiscoveryClient.java:820)
+	at com.netflix.discovery.InstanceInfoReplicator.run(InstanceInfoReplicator.java:121)
+	at com.netflix.discovery.InstanceInfoReplicator$1.run(InstanceInfoReplicator.java:101)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:549)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:757)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:571)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
+	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:184)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:447)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:96)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:115)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$0(RestTemplateTransportClientFactory.java:143)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
+	... 22 more
+
+2025-07-04 22:06:55.393 [DiscoveryClient-InstanceInfoReplicator-0] WARN  c.n.d.s.t.d.RetryableEurekaHttpClient - Request execution failed with message: I/O error on POST request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused
+2025-07-04 22:06:55.393 [DiscoveryClient-InstanceInfoReplicator-0] WARN  c.netflix.discovery.DiscoveryClient - DiscoveryClient_SUBSCRIPTION-MANAGER/mac.fritz.box:subscription-manager:3000 - registration failed Cannot execute request on any known server
+com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:77)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56)
+	at com.netflix.discovery.DiscoveryClient.register(DiscoveryClient.java:820)
+	at com.netflix.discovery.InstanceInfoReplicator.run(InstanceInfoReplicator.java:121)
+	at com.netflix.discovery.InstanceInfoReplicator$1.run(InstanceInfoReplicator.java:101)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-07-04 22:06:55.396 [DiscoveryClient-InstanceInfoReplicator-0] WARN  c.n.discovery.InstanceInfoReplicator - There was a problem with the instance info replicator
+com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:77)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56)
+	at com.netflix.discovery.DiscoveryClient.register(DiscoveryClient.java:820)
+	at com.netflix.discovery.InstanceInfoReplicator.run(InstanceInfoReplicator.java:121)
+	at com.netflix.discovery.InstanceInfoReplicator$1.run(InstanceInfoReplicator.java:101)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-07-04 22:06:55.409 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-04 22:06:55.412 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-07-04 22:06:55.417 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-07-04 22:06:55.418 [SpringApplicationShutdownHook] INFO  c.netflix.discovery.DiscoveryClient - Shutting down DiscoveryClient ...
+2025-07-04 22:06:58.421 [SpringApplicationShutdownHook] INFO  c.netflix.discovery.DiscoveryClient - Unregistering ...
+2025-07-04 22:06:58.423 [SpringApplicationShutdownHook] DEBUG o.s.web.client.RestTemplate - HTTP DELETE http://localhost:8761/eureka/apps/SUBSCRIPTION-MANAGER/mac.fritz.box:subscription-manager:3000
+2025-07-04 22:06:58.424 [SpringApplicationShutdownHook] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:06:58.425 [SpringApplicationShutdownHook] INFO  c.n.d.s.t.d.RedirectingEurekaHttpClient - Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=Connection pool shut down stacktrace=java.lang.IllegalStateException: Connection pool shut down
+	at org.apache.hc.core5.util.Asserts.check(Asserts.java:38)
+	at org.apache.hc.core5.pool.StrictConnPool.lease(StrictConnPool.java:176)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.lease(PoolingHttpClientConnectionManager.java:298)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.acquireEndpoint(InternalExecRuntime.java:103)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:125)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:96)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:115)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$0(RestTemplateTransportClientFactory.java:143)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:790)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:672)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.cancel(RestTemplateEurekaHttpClient.java:87)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.executeOnNewServer(RedirectingEurekaHttpClient.java:121)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:80)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:77)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71)
+	at com.netflix.discovery.DiscoveryClient.unregister(DiscoveryClient.java:916)
+	at com.netflix.discovery.DiscoveryClient.shutdown(DiscoveryClient.java:892)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMethod.invoke(InitDestroyAnnotationBeanPostProcessor.java:457)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeDestroyMethods(InitDestroyAnnotationBeanPostProcessor.java:415)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeDestruction(InitDestroyAnnotationBeanPostProcessor.java:239)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:202)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.run(DisposableBeanAdapter.java:195)
+	at org.springframework.cloud.context.scope.GenericScope$BeanLifecycleWrapper.destroy(GenericScope.java:389)
+	at org.springframework.cloud.context.scope.GenericScope.destroy(GenericScope.java:136)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:211)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroyBean(DefaultSingletonBeanRegistry.java:587)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingleton(DefaultSingletonBeanRegistry.java:559)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingleton(DefaultListableBeanFactory.java:1202)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingletons(DefaultSingletonBeanRegistry.java:520)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingletons(DefaultListableBeanFactory.java:1195)
+	at org.springframework.context.support.AbstractApplicationContext.destroyBeans(AbstractApplicationContext.java:1186)
+	at org.springframework.context.support.AbstractApplicationContext.doClose(AbstractApplicationContext.java:1147)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.doClose(ServletWebServerApplicationContext.java:174)
+	at org.springframework.context.support.AbstractApplicationContext.close(AbstractApplicationContext.java:1093)
+	at org.springframework.boot.SpringApplicationShutdownHook.closeAndWait(SpringApplicationShutdownHook.java:145)
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
+	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:114)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+
+2025-07-04 22:06:58.425 [SpringApplicationShutdownHook] WARN  c.n.d.s.t.d.RetryableEurekaHttpClient - Request execution failed with message: Connection pool shut down
+2025-07-04 22:06:58.426 [SpringApplicationShutdownHook] ERROR c.netflix.discovery.DiscoveryClient - DiscoveryClient_SUBSCRIPTION-MANAGER/mac.fritz.box:subscription-manager:3000 - de-registration failedCannot execute request on any known server
+com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:77)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71)
+	at com.netflix.discovery.DiscoveryClient.unregister(DiscoveryClient.java:916)
+	at com.netflix.discovery.DiscoveryClient.shutdown(DiscoveryClient.java:892)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMethod.invoke(InitDestroyAnnotationBeanPostProcessor.java:457)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeDestroyMethods(InitDestroyAnnotationBeanPostProcessor.java:415)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeDestruction(InitDestroyAnnotationBeanPostProcessor.java:239)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:202)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.run(DisposableBeanAdapter.java:195)
+	at org.springframework.cloud.context.scope.GenericScope$BeanLifecycleWrapper.destroy(GenericScope.java:389)
+	at org.springframework.cloud.context.scope.GenericScope.destroy(GenericScope.java:136)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:211)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroyBean(DefaultSingletonBeanRegistry.java:587)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingleton(DefaultSingletonBeanRegistry.java:559)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingleton(DefaultListableBeanFactory.java:1202)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingletons(DefaultSingletonBeanRegistry.java:520)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingletons(DefaultListableBeanFactory.java:1195)
+	at org.springframework.context.support.AbstractApplicationContext.destroyBeans(AbstractApplicationContext.java:1186)
+	at org.springframework.context.support.AbstractApplicationContext.doClose(AbstractApplicationContext.java:1147)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.doClose(ServletWebServerApplicationContext.java:174)
+	at org.springframework.context.support.AbstractApplicationContext.close(AbstractApplicationContext.java:1093)
+	at org.springframework.boot.SpringApplicationShutdownHook.closeAndWait(SpringApplicationShutdownHook.java:145)
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
+	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:114)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-07-04 22:06:58.428 [SpringApplicationShutdownHook] INFO  c.netflix.discovery.DiscoveryClient - Completed shut down of DiscoveryClient

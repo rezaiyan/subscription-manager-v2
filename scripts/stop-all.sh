@@ -11,7 +11,7 @@ echo -e "${BLUE}=== Stopping All Subscription Manager Services ===${NC}"
 
 # Stop Docker containers
 echo -e "${BLUE}Stopping Docker containers...${NC}"
-docker-compose down
+docker-compose -f config/docker-compose.yml down
 
 # Kill Gradle processes
 echo -e "${BLUE}Stopping Gradle processes...${NC}"

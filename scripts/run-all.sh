@@ -157,20 +157,20 @@ fi
 
 # Stop only our specific services if they're running, without affecting other Docker containers
 echo -e "${BLUE}Stopping any running subscription manager containers...${NC}"
-if docker-compose ps | grep -q "subscription-manager\|api-gateway\|eureka-server\|config-server\|create-subscription-service"; then
-    docker-compose stop api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
-    docker-compose rm -f api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
+if docker-compose -f config/docker-compose.yml ps | grep -q "subscription-manager\|api-gateway\|eureka-server\|config-server\|create-subscription-service"; then
+    docker-compose -f config/docker-compose.yml stop api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
+    docker-compose -f config/docker-compose.yml rm -f api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
 else
     echo -e "${GREEN}No subscription manager containers running${NC}"
 fi
 
 # Build Docker images (if needed)
 echo -e "${BLUE}Building Docker images...${NC}"
-docker-compose build api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
+docker-compose -f config/docker-compose.yml build api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
 
 # Start infrastructure services first
 echo -e "${BLUE}Starting infrastructure services...${NC}"
-docker-compose up -d zookeeper postgres-main postgres-create kafka
+docker-compose -f config/docker-compose.yml up -d zookeeper postgres-main postgres-create kafka
 
 # Wait for infrastructure to be ready
 echo -e "${BLUE}Waiting for infrastructure services to be ready...${NC}"

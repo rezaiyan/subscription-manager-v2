@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Subscriptions
+import androidx.compose.material.icons.filled.Monitor
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -77,6 +78,13 @@ fun SubscriptionListScreen(
                     }
                     IconButton(onClick = onAddNew) {
                         Icon(Icons.Default.Add, contentDescription = "Add Subscription")
+                    }
+                    IconButton(
+                        onClick = { 
+                            //todo: Navigate to monitoring dashboard
+                        }
+                    ) {
+                        Icon(Icons.Default.Monitor, contentDescription = "Monitoring Dashboard")
                     }
                 }
             )

@@ -7,7 +7,7 @@ set -e  # Exit on any error
 
 # Configuration
 DB_USER="ali.rezaiyan"
-DB_PASSWORD=""
+DB_PASSWORD="password123"
 DB_HOST="localhost"
 DB_PORT="5432"
 MAIN_DB="subscription_main_db"
@@ -130,7 +130,7 @@ start_eureka() {
     fi
     
     # Start Eureka in background
-    nohup ./gradlew :eureka-server:bootRun > logs/eureka.log 2>&1 &
+    nohup ./gradlew :server:eureka-server:bootRun > logs/eureka.log 2>&1 &
     EUREKA_PID=$!
     echo $EUREKA_PID > pids/eureka.pid
     

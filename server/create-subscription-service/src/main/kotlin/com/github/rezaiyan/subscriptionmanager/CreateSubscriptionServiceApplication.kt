@@ -7,7 +7,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.context.annotation.Bean
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
-import javax.annotation.PostConstruct
+import jakarta.annotation.PostConstruct
 import java.math.BigDecimal
 import java.time.Instant
 
@@ -92,7 +92,8 @@ class CreateSubscriptionServiceApplication {
                             amount = subscription.amount,
                             frequency = subscription.frequency,
                             startDate = subscription.startDate,
-                            active = subscription.active
+                            active = subscription.active,
+                            createdAt = subscription.createdAt
                         )
                         kafkaEventPublisher.publishSubscriptionCreatedEvent(event)
                         logger.info("DataSyncComponent - Published event for subscription: ${subscription.name}")

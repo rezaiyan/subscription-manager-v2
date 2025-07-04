@@ -9,6 +9,9 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Ensure logs directory exists
+mkdir -p logs
+
 # Configuration for the subscription manager services
 
 # Function to find a free port
@@ -20,8 +23,6 @@ find_free_port() {
     done
     echo $port
 }
-
-
 
 # Function to check if a port is available and kill processes if needed
 check_port() {
@@ -90,6 +91,7 @@ cleanup() {
     if [ ! -z "$SERVER_PID" ]; then kill $SERVER_PID 2>/dev/null || true; fi
     if [ ! -z "$GATEWAY_PID" ]; then kill $GATEWAY_PID 2>/dev/null || true; fi
     if [ ! -z "$WEBSITE_PID" ]; then kill $WEBSITE_PID 2>/dev/null || true; fi
+    if [ ! -z "$MONITOR_PID" ]; then kill $MONITOR_PID 2>/dev/null || true; fi
     echo -e "${GREEN}Cleanup completed${NC}"
 }
 
@@ -148,6 +150,7 @@ check_port 8888 "Config Server" || port_issues=true
 check_port 3001 "Create Subscription Service" || port_issues=true
 check_port 3000 "Main Server" || port_issues=true
 check_port 8080 "API Gateway" || port_issues=true
+check_port 8082 "Monitoring Dashboard" || port_issues=true
 
 if [ "$port_issues" = true ]; then
     echo -e "${YELLOW}Some ports could not be freed. Continuing anyway...${NC}"
@@ -167,6 +170,37 @@ fi
 # Build Docker images (if needed)
 echo -e "${BLUE}Building Docker images...${NC}"
 docker-compose -f config/docker-compose.yml build api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
+
+# Function to check Kafka container state and handle accordingly
+check_kafka_container() {
+    local kafka_status
+    kafka_status=$(docker ps -a --filter "name=^/kafka$" --format '{{.Status}}')
+    if [ -z "$kafka_status" ]; then
+        echo -e "${YELLOW}Kafka container does not exist. It will be created by Docker Compose.${NC}"
+        return 0
+    fi
+    if [[ "$kafka_status" == Exited* || "$kafka_status" == "Created"* ]]; then
+        echo -e "${YELLOW}Kafka container exists but is not running. Removing...${NC}"
+        docker rm -f kafka
+        return 0
+    fi
+    if [[ "$kafka_status" == Up* ]]; then
+        # Check health if available
+        kafka_health=$(docker inspect --format='{{.State.Health.Status}}' kafka 2>/dev/null || echo "none")
+        if [ "$kafka_health" == "unhealthy" ]; then
+            echo -e "${RED}Kafka container is unhealthy. Removing and restarting...${NC}"
+            docker rm -f kafka
+            return 0
+        fi
+        echo -e "${GREEN}Kafka container is already running and healthy.${NC}"
+        return 0
+    fi
+    echo -e "${RED}Kafka container is in an unknown state: $kafka_status. Removing...${NC}"
+    docker rm -f kafka
+}
+
+# Place this function call before starting infrastructure services
+check_kafka_container
 
 # Start infrastructure services first
 echo -e "${BLUE}Starting infrastructure services...${NC}"
@@ -250,7 +284,15 @@ WEBSITE_PID=$!
 cd ..
 echo "Website PID: $WEBSITE_PID"
 
-# Wait a moment for website to start
+# Start the monitoring dashboard
+echo -e "${BLUE}Starting Monitoring Dashboard...${NC}"
+cd monitoring
+python3 server.py > ../logs/monitor.log 2>&1 &
+MONITOR_PID=$!
+cd ..
+echo "Monitoring Dashboard PID: $MONITOR_PID"
+
+# Wait a moment for services to start
 sleep 5
 
 echo -e "${GREEN}=== All Services Started Successfully! ===${NC}"
@@ -265,6 +307,7 @@ echo -e "  • Create Subscription Service: ${GREEN}http://localhost:3001${NC}"
 echo -e "  • Main Server: ${GREEN}http://localhost:3000${NC}"
 echo -e "  • API Gateway: ${GREEN}http://localhost:8080${NC}"
 echo -e "  • Website: ${GREEN}http://localhost:8081${NC}"
+echo -e "  • Monitoring Dashboard: ${GREEN}http://localhost:8082${NC}"
 
 echo -e "${BLUE}Log files are available in the logs/ directory${NC}"
 echo -e "${YELLOW}Press Ctrl+C to stop all services${NC}"

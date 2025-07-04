@@ -6,6 +6,8 @@ import org.springframework.boot.runApplication
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.context.annotation.Bean
 import org.springframework.boot.CommandLineRunner
+import org.springframework.stereotype.Component
+import javax.annotation.PostConstruct
 import java.math.BigDecimal
 import java.time.Instant
 
@@ -60,6 +62,49 @@ class CreateSubscriptionServiceApplication {
             logger.info("CreateSubscriptionServiceApplication - Initial data loaded successfully")
         } else {
             logger.info("CreateSubscriptionServiceApplication - Database already contains data, skipping initial load")
+        }
+    }
+    
+    @Component
+    class DataSyncComponent(
+        private val repository: CreateSubscriptionRepository,
+        private val kafkaEventPublisher: KafkaEventPublisher
+    ) {
+        private val logger = LoggerFactory.getLogger(DataSyncComponent::class.java)
+        
+        @PostConstruct
+        fun syncExistingData() {
+            logger.info("DataSyncComponent - Starting automatic data sync")
+            
+            // Wait a bit for Kafka to be ready
+            Thread.sleep(5000)
+            
+            try {
+                val existingSubscriptions = repository.findAll()
+                if (existingSubscriptions.isNotEmpty()) {
+                    logger.info("DataSyncComponent - Found ${existingSubscriptions.size} existing subscriptions, publishing events")
+                    
+                    existingSubscriptions.forEach { subscription ->
+                        val event = SubscriptionCreatedEvent(
+                            subscriptionId = subscription.id,
+                            name = subscription.name,
+                            description = subscription.description,
+                            amount = subscription.amount,
+                            frequency = subscription.frequency,
+                            startDate = subscription.startDate,
+                            active = subscription.active
+                        )
+                        kafkaEventPublisher.publishSubscriptionCreatedEvent(event)
+                        logger.info("DataSyncComponent - Published event for subscription: ${subscription.name}")
+                    }
+                    
+                    logger.info("DataSyncComponent - All existing subscriptions synced successfully")
+                } else {
+                    logger.info("DataSyncComponent - No existing subscriptions found")
+                }
+            } catch (e: Exception) {
+                logger.warn("DataSyncComponent - Failed to sync existing data: ${e.message}")
+            }
         }
     }
 }

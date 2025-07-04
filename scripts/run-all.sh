@@ -176,6 +176,25 @@ docker-compose -f config/docker-compose.yml up -d zookeeper postgres-main postgr
 echo -e "${BLUE}Waiting for infrastructure services to be ready...${NC}"
 sleep 10
 
+# Wait for Kafka to be fully ready
+echo -e "${BLUE}Waiting for Kafka to be fully ready...${NC}"
+max_attempts=30
+attempt=1
+while [ $attempt -le $max_attempts ]; do
+    if docker exec kafka kafka-topics --bootstrap-server localhost:9092 --list >/dev/null 2>&1; then
+        echo -e "${GREEN}Kafka is fully ready!${NC}"
+        break
+    fi
+    
+    echo -e "${YELLOW}Attempt $attempt/$max_attempts: Kafka not ready yet...${NC}"
+    sleep 3
+    attempt=$((attempt + 1))
+done
+
+if [ $attempt -gt $max_attempts ]; then
+    echo -e "${RED}Kafka did not become ready in time. Continuing anyway...${NC}"
+fi
+
 # Start Eureka Server
 echo -e "${BLUE}Starting Eureka Server...${NC}"
 ./gradlew :server:eureka-server:bootRun > logs/eureka-server.log 2>&1 &

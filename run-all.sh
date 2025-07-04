@@ -88,6 +88,7 @@ cleanup() {
     if [ ! -z "$CONFIG_PID" ]; then kill $CONFIG_PID 2>/dev/null || true; fi
     if [ ! -z "$CREATE_PID" ]; then kill $CREATE_PID 2>/dev/null || true; fi
     if [ ! -z "$SERVER_PID" ]; then kill $SERVER_PID 2>/dev/null || true; fi
+    if [ ! -z "$GATEWAY_PID" ]; then kill $GATEWAY_PID 2>/dev/null || true; fi
     if [ ! -z "$WEBSITE_PID" ]; then kill $WEBSITE_PID 2>/dev/null || true; fi
     echo -e "${GREEN}Cleanup completed${NC}"
 }
@@ -101,12 +102,20 @@ echo -e "${BLUE}=== Subscription Manager - Complete Startup Script ===${NC}"
 if ! docker info >/dev/null 2>&1; then
     echo -e "${YELLOW}Docker is not running. Attempting to start Docker Desktop...${NC}"
     open -a Docker
+    
+    # Wait a bit for Docker to start launching
+    sleep 3
+    
     echo -n "Waiting for Docker to start"
-    max_attempts=30
+    max_attempts=60  # Increased from 30 to 60 attempts
     attempt=1
     while ! docker info >/dev/null 2>&1; do
         if [ $attempt -ge $max_attempts ]; then
             echo -e "\n${RED}Docker did not start after $((max_attempts*2)) seconds. Please start Docker Desktop manually and try again.${NC}"
+            echo -e "${YELLOW}You can also try:${NC}"
+            echo -e "  1. Open Docker Desktop manually from Applications"
+            echo -e "  2. Wait for it to fully start"
+            echo -e "  3. Run this script again"
             exit 1
         fi
         echo -n "."
@@ -115,7 +124,7 @@ if ! docker info >/dev/null 2>&1; then
     done
     echo -e "\n${GREEN}Docker is now running!${NC}"
     # Give Docker a moment to fully initialize
-    sleep 5
+    sleep 10  # Increased from 5 to 10 seconds
 else
     echo -e "${GREEN}Docker is running${NC}"
 fi
@@ -135,7 +144,7 @@ check_port 9092 "Kafka" || port_issues=true
 check_port 5432 "PostgreSQL Main" || port_issues=true
 check_port 5433 "PostgreSQL Create" || port_issues=true
 check_port 8761 "Eureka Server" || port_issues=true
-check_port 8889 "Config Server" || port_issues=true
+check_port 8888 "Config Server" || port_issues=true
 check_port 3001 "Create Subscription Service" || port_issues=true
 check_port 3000 "Main Server" || port_issues=true
 check_port 8080 "API Gateway" || port_issues=true
@@ -169,7 +178,7 @@ sleep 10
 
 # Start Eureka Server
 echo -e "${BLUE}Starting Eureka Server...${NC}"
-./gradlew :eureka-server:bootRun > logs/eureka-server.log 2>&1 &
+./gradlew :server:eureka-server:bootRun > logs/eureka-server.log 2>&1 &
 EUREKA_PID=$!
 echo "Eureka Server PID: $EUREKA_PID"
 
@@ -178,16 +187,16 @@ wait_for_service "http://localhost:8761" "Eureka Server"
 
 # Start Config Server
 echo -e "${BLUE}Starting Config Server...${NC}"
-./gradlew :config-server:bootRun > logs/config-server.log 2>&1 &
+./gradlew :server:config-server:bootRun > logs/config-server.log 2>&1 &
 CONFIG_PID=$!
 echo "Config Server PID: $CONFIG_PID"
 
 # Wait for Config Server to be ready
-wait_for_service "http://localhost:8889/actuator/health" "Config Server"
+wait_for_service "http://localhost:8888/actuator/health" "Config Server"
 
 # Start Create Subscription Service
 echo -e "${BLUE}Starting Create Subscription Service...${NC}"
-./gradlew :create-subscription-service:bootRun > logs/create-service.log 2>&1 &
+./gradlew :server:create-subscription-service:bootRun > logs/create-service.log 2>&1 &
 CREATE_PID=$!
 echo "Create Subscription Service PID: $CREATE_PID"
 
@@ -196,7 +205,7 @@ wait_for_service "http://localhost:3001/actuator/health" "Create Subscription Se
 
 # Start Main Subscription Manager Server
 echo -e "${BLUE}Starting Main Subscription Manager Server...${NC}"
-./gradlew :server:bootRun > logs/main-server.log 2>&1 &
+./gradlew :server:main-service:bootRun > logs/main-server.log 2>&1 &
 SERVER_PID=$!
 echo "Main Server PID: $SERVER_PID"
 
@@ -207,7 +216,9 @@ wait_for_service "http://localhost:3000/actuator/health" "Main Server"
 
 # Start API Gateway
 echo -e "${BLUE}Starting API Gateway...${NC}"
-docker-compose up -d api-gateway
+./gradlew :server:api-gateway:bootRun > logs/api-gateway.log 2>&1 &
+GATEWAY_PID=$!
+echo "API Gateway PID: $GATEWAY_PID"
 
 # Wait for API Gateway to be ready
 wait_for_service "http://localhost:8080/actuator/health" "API Gateway"

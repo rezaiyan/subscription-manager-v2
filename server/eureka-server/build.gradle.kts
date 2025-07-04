@@ -1,26 +1,6 @@
-plugins {
-    alias(libs.plugins.kotlinJvm)
-    alias(libs.plugins.kotlinSpring)
-    alias(libs.plugins.springBoot)
-    alias(libs.plugins.springDependencyManagement)
-}
-
-repositories {
-    mavenCentral()
-}
-
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
-    }
-}
-
-group = "com.github.rezaiyan.subscriptionmanager"
-version = "0.0.1-SNAPSHOT"
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 

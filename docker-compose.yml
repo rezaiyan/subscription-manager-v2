@@ -61,7 +61,7 @@ services:
   eureka-server:
     build:
       context: .
-      dockerfile: eureka-server/Dockerfile
+      dockerfile: server/eureka-server/Dockerfile
     ports:
       - "8761:8761"
     depends_on:
@@ -76,7 +76,7 @@ services:
   create-subscription-service:
     build:
       context: .
-      dockerfile: create-subscription-service/Dockerfile
+      dockerfile: server/create-subscription-service/Dockerfile
     ports:
       - "3001:3001"
     depends_on:
@@ -95,7 +95,7 @@ services:
   config-server:
     build:
       context: .
-      dockerfile: config-server/Dockerfile
+      dockerfile: server/config-server/Dockerfile
     ports:
       - "8889:8888"
     depends_on:
@@ -106,7 +106,7 @@ services:
   api-gateway:
     build:
       context: .
-      dockerfile: api-gateway/Dockerfile
+      dockerfile: server/api-gateway/Dockerfile
     ports:
       - "8080:8080"
     depends_on:
@@ -119,7 +119,7 @@ services:
   subscription-manager:
     build:
       context: .
-      dockerfile: server/Dockerfile
+      dockerfile: server/main-service/Dockerfile
     ports:
       - "3000:3000"
     depends_on:

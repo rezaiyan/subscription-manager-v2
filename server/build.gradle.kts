@@ -1,81 +1,48 @@
 plugins {
-    alias(libs.plugins.kotlinJvm)
-    alias(libs.plugins.kotlinSpring)
-    alias(libs.plugins.kotlinJpa)
-    alias(libs.plugins.springBoot)
-    alias(libs.plugins.springDependencyManagement)
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
-    }
+    alias(libs.plugins.kotlinJvm) apply false
+    alias(libs.plugins.kotlinSpring) apply false
+    alias(libs.plugins.kotlinJpa) apply false
+    alias(libs.plugins.springBoot) apply false
+    alias(libs.plugins.springDependencyManagement) apply false
 }
 
 group = "com.github.rezaiyan.subscriptionmanager"
 version = "0.0.1-SNAPSHOT"
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+allprojects {
+    repositories {
+        mavenCentral()
     }
 }
 
-dependencies {
-    implementation(libs.spring.boot.starter.web)
-    implementation(libs.spring.boot.starter.data.jpa)
-    implementation(libs.jackson.module.kotlin)
-    implementation(libs.kotlin.reflect)
-    
-    // Service discovery
-    implementation(libs.spring.cloud.starter.netflix.eureka.client)
-    
-    // Kafka for event-driven communication
-    implementation(libs.spring.kafka)
-    
-    // Actuator for health checks
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-
-    // PostgreSQL dependency
-    runtimeOnly(libs.postgresql)
-
-    // H2 for development and testing
-    implementation(libs.h2)
-
-    // Test dependencies
-    testImplementation(libs.spring.boot.starter.test) {
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+subprojects {
+    apply {
+        plugin("org.jetbrains.kotlin.jvm")
+        plugin("org.jetbrains.kotlin.plugin.spring")
+        plugin("org.jetbrains.kotlin.plugin.jpa")
+        plugin("org.springframework.boot")
+        plugin("io.spring.dependency-management")
     }
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    compilerOptions {
-        freeCompilerArgs.add("-Xjsr305=strict")
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+    group = "com.github.rezaiyan.subscriptionmanager"
+    version = "0.0.1-SNAPSHOT"
+
+    configure<JavaPluginExtension> {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
     }
-}
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
+    // Dependency management will be handled in each subproject
 
-// Configure the main class for the application
-springBoot {
-    mainClass.set("com.github.rezaiyan.subscriptionmanager.SubscriptionManagerApplicationKt")
-}
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        compilerOptions {
+            freeCompilerArgs.add("-Xjsr305=strict")
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        }
+    }
 
-// Task to run the PostgreSQL connection checker
-tasks.register<JavaExec>("checkPostgreSQL") {
-    group = "verification"
-    description = "Checks if PostgreSQL is installed and accessible"
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("com.github.rezaiyan.subscriptionmanager.PostgreSQLConnectionChecker")
-}
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+} 

@@ -1,23 +1,3 @@
-plugins {
-    alias(libs.plugins.kotlinJvm)
-    alias(libs.plugins.kotlinSpring)
-    alias(libs.plugins.springBoot)
-    alias(libs.plugins.springDependencyManagement)
-}
-
-group = "com.github.rezaiyan.subscriptionmanager"
-version = "0.0.1-SNAPSHOT"
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
-}
-
-repositories {
-    mavenCentral()
-}
-
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
@@ -25,10 +5,11 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation(libs.spring.boot.starter.web)
-    implementation(libs.spring.cloud.config.server)
+    implementation(libs.spring.cloud.starter.gateway)
+    implementation(libs.spring.cloud.starter.netflix.eureka.client)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
     // Test dependencies
     testImplementation(libs.spring.boot.starter.test) {
@@ -52,5 +33,5 @@ tasks.withType<Test> {
 }
 
 springBoot {
-    mainClass.set("com.github.rezaiyan.subscriptionmanager.ConfigServerApplicationKt")
+    mainClass.set("com.github.rezaiyan.subscriptionmanager.ApiGatewayApplicationKt")
 } 

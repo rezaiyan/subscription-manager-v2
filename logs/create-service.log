@@ -1,13 +1,13 @@
-Starting a Gradle Daemon, 2 busy and 1 incompatible and 15 stopped Daemons could not be reused, use --status for details
+Starting a Gradle Daemon, 3 busy and 19 stopped Daemons could not be reused, use --status for details
 Reusing configuration cache.
-> Task :create-subscription-service:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :create-subscription-service:processResources UP-TO-DATE
-> Task :create-subscription-service:compileKotlin UP-TO-DATE
-> Task :create-subscription-service:compileJava NO-SOURCE
-> Task :create-subscription-service:classes UP-TO-DATE
-> Task :create-subscription-service:resolveMainClassName UP-TO-DATE
+> Task :server:create-subscription-service:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:create-subscription-service:processResources UP-TO-DATE
+> Task :server:create-subscription-service:compileKotlin UP-TO-DATE
+> Task :server:create-subscription-service:compileJava NO-SOURCE
+> Task :server:create-subscription-service:classes UP-TO-DATE
+> Task :server:create-subscription-service:resolveMainClassName UP-TO-DATE
 
-> Task :create-subscription-service:bootRun
+> Task :server:create-subscription-service:bootRun
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -17,72 +17,76 @@ Reusing configuration cache.
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.2.6)
 
-2025-07-03 23:31:27.997 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2025-07-03 23:31:28.014 [main] INFO  c.g.r.s.CreateSubscriptionServiceApplicationKt - Starting CreateSubscriptionServiceApplicationKt using Java 21.0.6 with PID 44758 (/Users/ali.rezaiyan/AndroidStudioProjects/Subscription Manager/create-subscription-service/build/classes/kotlin/main started by ali.rezaiyan in /Users/ali.rezaiyan/AndroidStudioProjects/Subscription Manager/create-subscription-service)
-2025-07-03 23:31:28.014 [main] DEBUG c.g.r.s.CreateSubscriptionServiceApplicationKt - Running with Spring Boot v3.2.6, Spring v6.1.8
-2025-07-03 23:31:28.014 [main] INFO  c.g.r.s.CreateSubscriptionServiceApplicationKt - No active profile set, falling back to 1 default profile: "default"
-2025-07-03 23:31:28.356 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-07-03 23:31:28.414 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 56 ms. Found 1 JPA repository interface.
-2025-07-03 23:31:28.513 [main] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=83797401-78b6-35d7-adbf-6ae41c5bd34b
-2025-07-03 23:31:28.639 [main] WARN  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [lbRestClientPostProcessor] is declared through a non-static factory method on that class; consider declaring it as static instead.
-2025-07-03 23:31:28.640 [main] WARN  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'deferringLoadBalancerInterceptor' of type [org.springframework.cloud.client.loadbalancer.DeferringLoadBalancerInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
-2025-07-03 23:31:28.741 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 3001 (http)
-2025-07-03 23:31:28.745 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-3001"]
-2025-07-03 23:31:28.746 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-07-03 23:31:28.746 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.24]
-2025-07-03 23:31:28.770 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2025-07-03 23:31:28.771 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 739 ms
-2025-07-03 23:31:28.851 [main] DEBUG o.s.w.f.ServerHttpObservationFilter - Filter 'webMvcObservationFilter' configured for use
-2025-07-03 23:31:28.901 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-07-03 23:31:28.927 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.4.8.Final
-2025-07-03 23:31:28.940 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
-2025-07-03 23:31:29.027 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-07-03 23:31:29.038 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2025-07-03 23:31:29.095 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@25435731
-2025-07-03 23:31:29.095 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2025-07-03 23:31:29.121 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-07-03 23:31:29.427 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-07-03 23:31:29.470 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-07-03 23:31:29.645 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-07-03 23:31:29.689 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 5 mappings in 'requestMappingHandlerMapping'
-2025-07-03 23:31:29.735 [main] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2025-07-03 23:31:29.752 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-07-03 23:31:29.767 [main] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-07-03 23:31:29.959 [main] INFO  o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration - Eureka HTTP Client uses RestTemplate.
-2025-07-03 23:31:29.984 [main] WARN  o.s.c.l.c.LoadBalancerCacheAutoConfiguration$LoadBalancerCaffeineWarnLogger - Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2025-07-03 23:31:29.987 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
-2025-07-03 23:31:30.021 [main] INFO  o.s.c.n.eureka.InstanceInfoFactory - Setting initial instance status as: STARTING
-2025-07-03 23:31:30.058 [main] INFO  c.netflix.discovery.DiscoveryClient - Initializing Eureka in region us-east-1
-2025-07-03 23:31:30.060 [main] INFO  c.n.d.s.r.aws.ConfigClusterResolver - Resolving eureka endpoints via configuration
-2025-07-03 23:31:30.069 [main] INFO  c.netflix.discovery.DiscoveryClient - Disable delta property : false
-2025-07-03 23:31:30.069 [main] INFO  c.netflix.discovery.DiscoveryClient - Single vip registry refresh property : null
-2025-07-03 23:31:30.069 [main] INFO  c.netflix.discovery.DiscoveryClient - Force full registry fetch : false
-2025-07-03 23:31:30.069 [main] INFO  c.netflix.discovery.DiscoveryClient - Application is null : false
-2025-07-03 23:31:30.069 [main] INFO  c.netflix.discovery.DiscoveryClient - Registered Applications size is zero : true
-2025-07-03 23:31:30.069 [main] INFO  c.netflix.discovery.DiscoveryClient - Application version is -1: true
-2025-07-03 23:31:30.069 [main] INFO  c.netflix.discovery.DiscoveryClient - Getting all instance registry info from the eureka server
-2025-07-03 23:31:30.141 [main] DEBUG o.s.web.client.RestTemplate - HTTP GET http://localhost:8761/eureka/apps/
-2025-07-03 23:31:30.176 [main] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
-2025-07-03 23:31:30.232 [main] DEBUG o.s.web.client.RestTemplate - Response 200 OK
-2025-07-03 23:31:30.233 [main] DEBUG o.s.web.client.RestTemplate - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
-2025-07-03 23:31:30.242 [main] INFO  c.netflix.discovery.DiscoveryClient - The response status is 200
-2025-07-03 23:31:30.243 [main] INFO  c.netflix.discovery.DiscoveryClient - Starting heartbeat executor: renew interval is: 30
-2025-07-03 23:31:30.243 [main] INFO  c.n.discovery.InstanceInfoReplicator - InstanceInfoReplicator onDemand update allowed rate per min is 4
-2025-07-03 23:31:30.245 [main] INFO  c.netflix.discovery.DiscoveryClient - Discovery Client initialized at timestamp 1751578290245 with initial instances count: 0
-2025-07-03 23:31:30.247 [main] INFO  o.s.c.n.e.s.EurekaServiceRegistry - Registering application CREATE-SUBSCRIPTION-SERVICE with eureka with status UP
-2025-07-03 23:31:30.248 [main] INFO  c.netflix.discovery.DiscoveryClient - Saw local status change event StatusChangeEvent [timestamp=1751578290248, current=UP, previous=STARTING]
-2025-07-03 23:31:30.248 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.netflix.discovery.DiscoveryClient - DiscoveryClient_CREATE-SUBSCRIPTION-SERVICE/mac.fritz.box:create-subscription-service:3001: registering service...
-2025-07-03 23:31:30.248 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-3001"]
-2025-07-03 23:31:30.249 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - HTTP POST http://localhost:8761/eureka/apps/CREATE-SUBSCRIPTION-SERVICE
-2025-07-03 23:31:30.250 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
-2025-07-03 23:31:30.253 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 3001 (http) with context path ''
-2025-07-03 23:31:30.254 [main] INFO  o.s.c.n.e.s.EurekaAutoServiceRegistration - Updating port to 3001
-2025-07-03 23:31:30.255 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Writing [InstanceInfo [instanceId = mac.fritz.box:create-subscription-service:3001, appName = CREATE-SUBSCRIPTION-SERVICE, hostName = 192.168.178.100, status = UP, ipAddr = 192.168.178.100, port = 3001, securePort = 443, dataCenterInfo = com.netflix.appinfo.MyDataCenterInfo@3ce60feb] as "application/json"
-2025-07-03 23:31:30.263 [main] INFO  c.g.r.s.CreateSubscriptionServiceApplicationKt - Started CreateSubscriptionServiceApplicationKt in 2.368 seconds (process running for 2.562)
-2025-07-03 23:31:30.265 [main] INFO  c.g.r.s.CreateSubscriptionServiceApplication - CreateSubscriptionServiceApplication - Starting data loader
-2025-07-03 23:31:30.294 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Response 204 NO_CONTENT
-2025-07-03 23:31:30.294 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.netflix.discovery.DiscoveryClient - DiscoveryClient_CREATE-SUBSCRIPTION-SERVICE/mac.fritz.box:create-subscription-service:3001 - registration status: 204
-2025-07-03 23:31:30.397 [main] DEBUG org.hibernate.SQL - 
+2025-07-04 22:03:38.278 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-07-04 22:03:38.297 [main] INFO  c.g.r.s.CreateSubscriptionServiceApplicationKt - Starting CreateSubscriptionServiceApplicationKt using Java 21.0.6 with PID 54293 (/Users/ali.rezaiyan/AndroidStudioProjects/Subscription Manager/server/create-subscription-service/build/classes/kotlin/main started by ali.rezaiyan in /Users/ali.rezaiyan/AndroidStudioProjects/Subscription Manager/server/create-subscription-service)
+2025-07-04 22:03:38.297 [main] DEBUG c.g.r.s.CreateSubscriptionServiceApplicationKt - Running with Spring Boot v3.2.6, Spring v6.1.8
+2025-07-04 22:03:38.297 [main] INFO  c.g.r.s.CreateSubscriptionServiceApplicationKt - No active profile set, falling back to 1 default profile: "default"
+2025-07-04 22:03:38.651 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-04 22:03:38.711 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 56 ms. Found 1 JPA repository interface.
+2025-07-04 22:03:38.807 [main] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=83797401-78b6-35d7-adbf-6ae41c5bd34b
+2025-07-04 22:03:38.931 [main] WARN  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [lbRestClientPostProcessor] is declared through a non-static factory method on that class; consider declaring it as static instead.
+2025-07-04 22:03:38.933 [main] WARN  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'deferringLoadBalancerInterceptor' of type [org.springframework.cloud.client.loadbalancer.DeferringLoadBalancerInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2025-07-04 22:03:39.031 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 3001 (http)
+2025-07-04 22:03:39.036 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-3001"]
+2025-07-04 22:03:39.036 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-07-04 22:03:39.036 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.24]
+2025-07-04 22:03:39.061 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-07-04 22:03:39.061 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 745 ms
+2025-07-04 22:03:39.136 [main] DEBUG o.s.w.f.ServerHttpObservationFilter - Filter 'webMvcObservationFilter' configured for use
+2025-07-04 22:03:39.193 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-04 22:03:39.218 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.4.8.Final
+2025-07-04 22:03:39.231 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-07-04 22:03:39.318 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-04 22:03:39.330 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-07-04 22:03:39.392 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7cbfbcd1
+2025-07-04 22:03:39.392 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-07-04 22:03:39.417 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-04 22:03:39.734 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-04 22:03:39.779 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-04 22:03:39.899 [main] INFO  c.g.r.s.KafkaConfig - KafkaConfig: Creating Kafka template
+2025-07-04 22:03:39.900 [main] INFO  c.g.r.s.KafkaConfig - KafkaConfig: Creating producer factory with bootstrap servers: localhost:9092
+2025-07-04 22:03:39.901 [main] INFO  c.g.r.s.KafkaConfig - KafkaConfig: Producer factory configuration: {value.serializer=class org.springframework.kafka.support.serializer.JsonSerializer, bootstrap.servers=localhost:9092, key.serializer=class org.apache.kafka.common.serialization.StringSerializer}
+2025-07-04 22:03:39.910 [main] INFO  c.g.r.s.KafkaConfig - KafkaConfig: Kafka template created successfully
+2025-07-04 22:03:39.944 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-04 22:03:39.986 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 5 mappings in 'requestMappingHandlerMapping'
+2025-07-04 22:03:40.032 [main] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-07-04 22:03:40.049 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-07-04 22:03:40.066 [main] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-07-04 22:03:40.257 [main] INFO  o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration - Eureka HTTP Client uses RestTemplate.
+2025-07-04 22:03:40.280 [main] WARN  o.s.c.l.c.LoadBalancerCacheAutoConfiguration$LoadBalancerCaffeineWarnLogger - Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2025-07-04 22:03:40.284 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
+2025-07-04 22:03:40.317 [main] INFO  o.s.c.n.eureka.InstanceInfoFactory - Setting initial instance status as: STARTING
+2025-07-04 22:03:40.354 [main] INFO  c.netflix.discovery.DiscoveryClient - Initializing Eureka in region us-east-1
+2025-07-04 22:03:40.356 [main] INFO  c.n.d.s.r.aws.ConfigClusterResolver - Resolving eureka endpoints via configuration
+2025-07-04 22:03:40.365 [main] INFO  c.netflix.discovery.DiscoveryClient - Disable delta property : false
+2025-07-04 22:03:40.365 [main] INFO  c.netflix.discovery.DiscoveryClient - Single vip registry refresh property : null
+2025-07-04 22:03:40.365 [main] INFO  c.netflix.discovery.DiscoveryClient - Force full registry fetch : false
+2025-07-04 22:03:40.365 [main] INFO  c.netflix.discovery.DiscoveryClient - Application is null : false
+2025-07-04 22:03:40.365 [main] INFO  c.netflix.discovery.DiscoveryClient - Registered Applications size is zero : true
+2025-07-04 22:03:40.365 [main] INFO  c.netflix.discovery.DiscoveryClient - Application version is -1: true
+2025-07-04 22:03:40.365 [main] INFO  c.netflix.discovery.DiscoveryClient - Getting all instance registry info from the eureka server
+2025-07-04 22:03:40.434 [main] DEBUG o.s.web.client.RestTemplate - HTTP GET http://localhost:8761/eureka/apps/
+2025-07-04 22:03:40.470 [main] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:03:40.517 [main] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:03:40.518 [main] DEBUG o.s.web.client.RestTemplate - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2025-07-04 22:03:40.527 [main] INFO  c.netflix.discovery.DiscoveryClient - The response status is 200
+2025-07-04 22:03:40.527 [main] INFO  c.netflix.discovery.DiscoveryClient - Starting heartbeat executor: renew interval is: 30
+2025-07-04 22:03:40.528 [main] INFO  c.n.discovery.InstanceInfoReplicator - InstanceInfoReplicator onDemand update allowed rate per min is 4
+2025-07-04 22:03:40.530 [main] INFO  c.netflix.discovery.DiscoveryClient - Discovery Client initialized at timestamp 1751659420529 with initial instances count: 0
+2025-07-04 22:03:40.532 [main] INFO  o.s.c.n.e.s.EurekaServiceRegistry - Registering application CREATE-SUBSCRIPTION-SERVICE with eureka with status UP
+2025-07-04 22:03:40.532 [main] INFO  c.netflix.discovery.DiscoveryClient - Saw local status change event StatusChangeEvent [timestamp=1751659420532, current=UP, previous=STARTING]
+2025-07-04 22:03:40.533 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.netflix.discovery.DiscoveryClient - DiscoveryClient_CREATE-SUBSCRIPTION-SERVICE/mac.fritz.box:create-subscription-service:3001: registering service...
+2025-07-04 22:03:40.533 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-3001"]
+2025-07-04 22:03:40.534 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - HTTP POST http://localhost:8761/eureka/apps/CREATE-SUBSCRIPTION-SERVICE
+2025-07-04 22:03:40.535 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:03:40.538 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 3001 (http) with context path ''
+2025-07-04 22:03:40.538 [main] INFO  o.s.c.n.e.s.EurekaAutoServiceRegistration - Updating port to 3001
+2025-07-04 22:03:40.539 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Writing [InstanceInfo [instanceId = mac.fritz.box:create-subscription-service:3001, appName = CREATE-SUBSCRIPTION-SERVICE, hostName = 192.168.178.100, status = UP, ipAddr = 192.168.178.100, port = 3001, securePort = 443, dataCenterInfo = com.netflix.appinfo.MyDataCenterInfo@40032b7b] as "application/json"
+2025-07-04 22:03:40.547 [main] INFO  c.g.r.s.CreateSubscriptionServiceApplicationKt - Started CreateSubscriptionServiceApplicationKt in 2.382 seconds (process running for 2.615)
+2025-07-04 22:03:40.549 [main] INFO  c.g.r.s.CreateSubscriptionServiceApplication - CreateSubscriptionServiceApplication - Starting data loader
+2025-07-04 22:03:40.578 [DiscoveryClient-InstanceInfoReplicator-0] DEBUG o.s.web.client.RestTemplate - Response 204 NO_CONTENT
+2025-07-04 22:03:40.578 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.netflix.discovery.DiscoveryClient - DiscoveryClient_CREATE-SUBSCRIPTION-SERVICE/mac.fritz.box:create-subscription-service:3001 - registration status: 204
+2025-07-04 22:03:40.682 [main] DEBUG org.hibernate.SQL - 
     select
         count(*) 
     from
@@ -92,18 +96,47 @@ Hibernate:
         count(*) 
     from
         subscription s1_0
-2025-07-03 23:31:30.403 [main] INFO  c.g.r.s.CreateSubscriptionServiceApplication - CreateSubscriptionServiceApplication - Database already contains data, skipping initial load
-2025-07-03 23:31:31.420 [http-nio-3001-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-07-03 23:31:31.420 [http-nio-3001-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2025-07-03 23:31:31.420 [http-nio-3001-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
-2025-07-03 23:31:31.420 [http-nio-3001-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
-2025-07-03 23:31:31.420 [http-nio-3001-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
-2025-07-03 23:31:31.421 [http-nio-3001-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@3f33c5e4
-2025-07-03 23:31:31.421 [http-nio-3001-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@47d7e8b5
-2025-07-03 23:31:31.421 [http-nio-3001-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
-2025-07-03 23:31:31.421 [http-nio-3001-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
-2025-07-03 23:31:31.426 [http-nio-3001-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/health", parameters={}
-2025-07-03 23:31:31.436 [http-nio-3001-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/octet-stream" to []
-2025-07-03 23:31:31.446 [http-nio-3001-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json', given [*/*] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
-2025-07-03 23:31:31.487 [http-nio-3001-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [org.springframework.boot.actuate.health.SystemHealth@5126eaa0]
-2025-07-03 23:31:31.494 [http-nio-3001-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-04 22:03:40.689 [main] INFO  c.g.r.s.CreateSubscriptionServiceApplication - CreateSubscriptionServiceApplication - Database already contains data, skipping initial load
+2025-07-04 22:03:41.412 [http-nio-3001-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-04 22:03:41.412 [http-nio-3001-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-07-04 22:03:41.412 [http-nio-3001-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2025-07-04 22:03:41.412 [http-nio-3001-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2025-07-04 22:03:41.412 [http-nio-3001-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2025-07-04 22:03:41.413 [http-nio-3001-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@355da59c
+2025-07-04 22:03:41.413 [http-nio-3001-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@384b718c
+2025-07-04 22:03:41.414 [http-nio-3001-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-07-04 22:03:41.414 [http-nio-3001-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2025-07-04 22:03:41.420 [http-nio-3001-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/health", parameters={}
+2025-07-04 22:03:41.428 [http-nio-3001-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/octet-stream" to []
+2025-07-04 22:03:41.437 [http-nio-3001-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json', given [*/*] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2025-07-04 22:03:41.479 [http-nio-3001-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [org.springframework.boot.actuate.health.SystemHealth@15eb783d]
+2025-07-04 22:03:41.486 [http-nio-3001-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-04 22:04:10.534 [DiscoveryClient-CacheRefreshExecutor-0] INFO  c.netflix.discovery.DiscoveryClient - Disable delta property : false
+2025-07-04 22:04:10.538 [DiscoveryClient-CacheRefreshExecutor-0] INFO  c.netflix.discovery.DiscoveryClient - Single vip registry refresh property : null
+2025-07-04 22:04:10.538 [DiscoveryClient-CacheRefreshExecutor-0] INFO  c.netflix.discovery.DiscoveryClient - Force full registry fetch : false
+2025-07-04 22:04:10.538 [DiscoveryClient-CacheRefreshExecutor-0] INFO  c.netflix.discovery.DiscoveryClient - Application is null : false
+2025-07-04 22:04:10.538 [DiscoveryClient-CacheRefreshExecutor-0] INFO  c.netflix.discovery.DiscoveryClient - Registered Applications size is zero : true
+2025-07-04 22:04:10.538 [DiscoveryClient-CacheRefreshExecutor-0] INFO  c.netflix.discovery.DiscoveryClient - Application version is -1: false
+2025-07-04 22:04:10.538 [DiscoveryClient-CacheRefreshExecutor-0] INFO  c.netflix.discovery.DiscoveryClient - Getting all instance registry info from the eureka server
+2025-07-04 22:04:10.541 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP GET http://localhost:8761/eureka/apps/
+2025-07-04 22:04:10.542 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP PUT http://localhost:8761/eureka/apps/CREATE-SUBSCRIPTION-SERVICE/mac.fritz.box:create-subscription-service:3001?status=UP&lastDirtyTimestamp=1751659420532
+2025-07-04 22:04:10.543 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:04:10.554 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:04:10.561 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:04:10.562 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2025-07-04 22:04:10.574 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:04:10.575 [DiscoveryClient-CacheRefreshExecutor-0] INFO  c.netflix.discovery.DiscoveryClient - The response status is 200
+2025-07-04 22:04:40.578 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP PUT http://localhost:8761/eureka/apps/CREATE-SUBSCRIPTION-SERVICE/mac.fritz.box:create-subscription-service:3001?status=UP&lastDirtyTimestamp=1751659420532
+2025-07-04 22:04:40.580 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP GET http://localhost:8761/eureka/apps/delta
+2025-07-04 22:04:40.580 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:04:40.581 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:04:40.589 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:04:40.590 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:04:40.590 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]
+2025-07-04 22:05:10.594 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP GET http://localhost:8761/eureka/apps/delta
+2025-07-04 22:05:10.594 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - HTTP PUT http://localhost:8761/eureka/apps/CREATE-SUBSCRIPTION-SERVICE/mac.fritz.box:create-subscription-service:3001?status=UP&lastDirtyTimestamp=1751659420532
+2025-07-04 22:05:10.595 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:05:10.595 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Accept=[application/json, application/*+json]
+2025-07-04 22:05:10.602 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:05:10.602 [DiscoveryClient-HeartbeatExecutor-0] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2025-07-04 22:05:10.602 [DiscoveryClient-CacheRefreshExecutor-0] DEBUG o.s.web.client.RestTemplate - Reading to [org.springframework.cloud.netflix.eureka.http.EurekaApplications]

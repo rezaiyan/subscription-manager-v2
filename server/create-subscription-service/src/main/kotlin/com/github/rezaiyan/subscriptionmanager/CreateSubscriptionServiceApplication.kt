@@ -6,11 +6,6 @@ import org.springframework.boot.runApplication
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.context.annotation.Bean
 import org.springframework.boot.CommandLineRunner
-import org.apache.kafka.clients.producer.ProducerConfig
-import org.apache.kafka.common.serialization.StringSerializer
-import org.springframework.kafka.core.DefaultKafkaProducerFactory
-import org.springframework.kafka.core.KafkaTemplate
-import org.springframework.kafka.support.serializer.JsonSerializer
 import java.math.BigDecimal
 import java.time.Instant
 
@@ -19,19 +14,7 @@ import java.time.Instant
 class CreateSubscriptionServiceApplication {
     private val logger = LoggerFactory.getLogger(CreateSubscriptionServiceApplication::class.java)
     
-    @Bean
-    fun kafkaTemplate(): KafkaTemplate<String, Any> {
-        logger.info("CreateSubscriptionServiceApplication: Creating Kafka template")
-        val configProps = HashMap<String, Any>()
-        configProps[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = "kafka:29092"
-        configProps[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
-        configProps[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = JsonSerializer::class.java
-        logger.info("CreateSubscriptionServiceApplication: Kafka config: $configProps")
-        val producerFactory = DefaultKafkaProducerFactory<String, Any>(configProps)
-        val template = KafkaTemplate(producerFactory)
-        logger.info("CreateSubscriptionServiceApplication: Kafka template created successfully")
-        return template
-    }
+
     
     @Bean
     fun dataLoader(repository: CreateSubscriptionRepository) = CommandLineRunner {

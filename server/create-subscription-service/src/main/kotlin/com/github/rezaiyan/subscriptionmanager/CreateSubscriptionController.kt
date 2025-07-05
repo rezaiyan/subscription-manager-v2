@@ -15,12 +15,13 @@ class CreateSubscriptionController(
     private val logger = LoggerFactory.getLogger(CreateSubscriptionController::class.java)
 
     @GetMapping
-    fun getAllSubscriptions(): ResponseEntity<List<Subscription>> {
+    fun getAllSubscriptions(): ResponseEntity<List<SubscriptionResponse>> {
         logger.info("GET /api/subscriptions - Fetching all subscriptions")
         try {
             val subscriptions = createSubscriptionRepository.findAll()
+            val responses = subscriptions.map { SubscriptionResponse.fromSubscription(it) }
             logger.info("GET /api/subscriptions - Successfully fetched ${subscriptions.size} subscriptions")
-            return ResponseEntity.ok(subscriptions)
+            return ResponseEntity.ok(responses)
         } catch (e: Exception) {
             logger.error("GET /api/subscriptions - Error fetching subscriptions: ${e.message}", e)
             return ResponseEntity.status(503).build()
@@ -28,24 +29,27 @@ class CreateSubscriptionController(
     }
 
     @PostMapping
-    fun createSubscription(@RequestBody subscription: Subscription): ResponseEntity<Subscription> {
-        logger.info("POST /api/subscriptions - Creating subscription: ${subscription.name}, amount: ${subscription.amount}, frequency: ${subscription.frequency}")
+    fun createSubscription(@RequestBody request: CreateSubscriptionRequest): ResponseEntity<SubscriptionResponse> {
+        logger.info("POST /api/subscriptions - Creating subscription: ${request.name}, amount: ${request.amount}, frequency: ${request.frequency}, isActive: ${request.isActive}")
         try {
             // Basic validation
-            if (subscription.frequency == null) {
+            if (request.frequency == null) {
                 logger.warn("POST /api/subscriptions - Validation failed: frequency is null")
                 return ResponseEntity.badRequest().build()
             }
-            if (subscription.name.isBlank()) {
+            if (request.name.isBlank()) {
                 logger.warn("POST /api/subscriptions - Validation failed: name is blank")
                 return ResponseEntity.badRequest().build()
             }
-            if (subscription.amount <= BigDecimal.ZERO) {
+            if (request.amount <= BigDecimal.ZERO) {
                 logger.warn("POST /api/subscriptions - Validation failed: amount <= 0")
                 return ResponseEntity.badRequest().build()
             }
 
-            logger.info("POST /api/subscriptions - Validation passed, saving subscription")
+            logger.info("POST /api/subscriptions - Validation passed, converting request to subscription")
+            val subscription = request.toSubscription()
+            
+            logger.info("POST /api/subscriptions - Saving subscription")
             val savedSubscription = createSubscriptionRepository.save(subscription)
             logger.info("POST /api/subscriptions - Subscription saved with ID: ${savedSubscription.id}")
             
@@ -64,8 +68,9 @@ class CreateSubscriptionController(
             kafkaEventPublisher.publishSubscriptionCreatedEvent(event)
             logger.info("POST /api/subscriptions - Kafka event published successfully")
             
+            val response = SubscriptionResponse.fromSubscription(savedSubscription)
             logger.info("POST /api/subscriptions - Successfully created subscription: ${savedSubscription.id}")
-            return ResponseEntity.ok(savedSubscription)
+            return ResponseEntity.ok(response)
         } catch (e: Exception) {
             logger.error("POST /api/subscriptions - Error creating subscription: ${e.message}", e)
             return ResponseEntity.status(503).build()

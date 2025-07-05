@@ -112,7 +112,6 @@ cleanup_all() {
     docker ps -a --filter "name=eureka-server" --format "{{.ID}}" | xargs -r docker rm -f
     docker ps -a --filter "name=create-subscription-service" --format "{{.ID}}" | xargs -r docker rm -f
     docker ps -a --filter "name=api-gateway" --format "{{.ID}}" | xargs -r docker rm -f
-    docker ps -a --filter "name=website" --format "{{.ID}}" | xargs -r docker rm -f
     # Also remove any old containers with generic names
     docker ps -a --filter "name=^zookeeper$" --format "{{.ID}}" | xargs -r docker rm -f
     docker ps -a --filter "name=^kafka$" --format "{{.ID}}" | xargs -r docker rm -f
@@ -123,7 +122,6 @@ cleanup_all() {
     docker ps -a --filter "name=^create-subscription-service$" --format "{{.ID}}" | xargs -r docker rm -f
     docker ps -a --filter "name=^subscription-manager$" --format "{{.ID}}" | xargs -r docker rm -f
     docker ps -a --filter "name=^api-gateway$" --format "{{.ID}}" | xargs -r docker rm -f
-    docker ps -a --filter "name=^website$" --format "{{.ID}}" | xargs -r docker rm -f
     
     # Remove all volumes with subscriptionmanager in name
     print_status "Removing all volumes with subscriptionmanager in name..."
@@ -159,6 +157,40 @@ cleanup_all() {
     print_success "Complete cleanup finished"
 }
 
+# Function to check if a port is available and kill processes if needed
+check_port() {
+    local port=$1
+    local service_name=$2
+    
+    if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
+        print_warning "Port $port is in use. Stopping existing process..."
+        
+        # Try to kill the process gracefully first
+        lsof -ti:$port | xargs kill 2>/dev/null || true
+        sleep 3
+        
+        # If still running, force kill
+        if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
+            print_warning "Force killing process on port $port..."
+            lsof -ti:$port | xargs kill -9 2>/dev/null || true
+            sleep 2
+        fi
+        
+        # Final check
+        if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
+            print_error "Failed to free port $port for $service_name"
+            print_warning "Process details: $(lsof -i :$port)"
+            return 1
+        else
+            print_success "Port $port freed for $service_name"
+            return 0
+        fi
+    else
+        print_success "Port $port is available for $service_name"
+        return 0
+    fi
+}
+
 # Function to wait for service to be healthy
 wait_for_healthy() {
     local service_name=$1
@@ -180,6 +212,54 @@ wait_for_healthy() {
     
     print_warning "$service_name did not become healthy in time, but continuing..."
     return 1
+}
+
+# Function to initialize PostgreSQL databases
+initialize_databases() {
+    print_status "Initializing PostgreSQL databases..."
+    
+    # Wait for PostgreSQL containers to be ready
+    local max_attempts=30
+    local attempt=1
+    
+    print_status "Waiting for PostgreSQL containers to be ready..."
+    while [ $attempt -le $max_attempts ]; do
+        if docker exec subscription-manager-postgres-main pg_isready -U ali.rezaiyan >/dev/null 2>&1 && \
+           docker exec subscription-manager-postgres-create pg_isready -U ali.rezaiyan >/dev/null 2>&1; then
+            print_success "PostgreSQL containers are ready"
+            break
+        fi
+        print_status "Attempt $attempt/$max_attempts: Waiting for PostgreSQL to be ready..."
+        sleep 2
+        attempt=$((attempt + 1))
+    done
+    
+    if [ $attempt -gt $max_attempts ]; then
+        print_error "PostgreSQL containers did not become ready. Skipping database initialization."
+        return 1
+    fi
+    
+    # Check and create main database
+    print_status "Checking main database..."
+    if ! docker exec subscription-manager-postgres-main psql -U ali.rezaiyan -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='subscription_main_db'" | grep -q 1; then
+        print_status "Creating main database..."
+        docker exec subscription-manager-postgres-main psql -U ali.rezaiyan -d postgres -c "CREATE DATABASE subscription_main_db;"
+        print_success "Main database created successfully"
+    else
+        print_success "Main database already exists"
+    fi
+    
+    # Check and create create database
+    print_status "Checking create database..."
+    if ! docker exec subscription-manager-postgres-create psql -U ali.rezaiyan -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='subscription_create_db'" | grep -q 1; then
+        print_status "Creating create database..."
+        docker exec subscription-manager-postgres-create psql -U ali.rezaiyan -d postgres -c "CREATE DATABASE subscription_create_db;"
+        print_success "Create database created successfully"
+    else
+        print_success "Create database already exists"
+    fi
+    
+    print_success "Database initialization completed successfully"
 }
 
 # Function to fix Kafka cluster ID issues
@@ -303,12 +383,7 @@ start_services() {
     wait_for_healthy "subscription-manager" 45
     wait_for_healthy "api-gateway" 30
     
-    # Start frontend
-    print_status "Starting frontend..."
-    docker-compose up -d website
-    
-    # Wait for frontend to be ready
-    wait_for_healthy "website" 20
+
     
     print_success "All services started successfully"
 }
@@ -326,7 +401,6 @@ show_status() {
     echo "  API Gateway: http://localhost:8080"
     echo "  Main Service: http://localhost:3000"
     echo "  Create Service: http://localhost:3001"
-    echo "  Frontend: http://localhost:8081"
     echo "  Kafka: localhost:9092"
     echo "  PostgreSQL Main: localhost:5432"
     echo "  PostgreSQL Create: localhost:5433"
@@ -349,13 +423,12 @@ start_app_services() {
     fi
     
     # Start application services
-    docker-compose up -d create-subscription-service subscription-manager api-gateway website
+    docker-compose up -d create-subscription-service subscription-manager api-gateway
     
     # Wait for application services to be ready
     wait_for_healthy "create-subscription-service" 45
     wait_for_healthy "subscription-manager" 45
     wait_for_healthy "api-gateway" 30
-    wait_for_healthy "website" 20
     
     print_success "Application services started successfully"
     show_status
@@ -382,7 +455,6 @@ main() {
     show_status
     
     print_success "All services are now running!"
-    print_status "You can access the application at: http://localhost:8081"
     print_status "To view logs, run: ./run-all.sh logs"
     print_status "To stop all services, run: docker-compose down"
 }

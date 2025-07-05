@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 import jakarta.annotation.PostConstruct
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.math.BigDecimal
 import java.time.Instant
 
@@ -16,7 +18,19 @@ import java.time.Instant
 class CreateSubscriptionServiceApplication {
     private val logger = LoggerFactory.getLogger(CreateSubscriptionServiceApplication::class.java)
     
-
+    @Bean
+    fun corsConfigurer(): WebMvcConfigurer {
+        return object : WebMvcConfigurer {
+            override fun addCorsMappings(registry: CorsRegistry) {
+                registry.addMapping("/**")
+                    .allowedOriginPatterns("*")
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+                    .allowedHeaders("*")
+                    .allowCredentials(true)
+                    .maxAge(3600)
+            }
+        }
+    }
     
     @Bean
     fun dataLoader(repository: CreateSubscriptionRepository) = CommandLineRunner {

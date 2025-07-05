@@ -10,6 +10,9 @@ dependencies {
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
     implementation("org.springframework.boot:spring-boot-starter-security")
+    
+    // Actuator for health checks
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     // Test dependencies
     testImplementation(libs.spring.boot.starter.test) {

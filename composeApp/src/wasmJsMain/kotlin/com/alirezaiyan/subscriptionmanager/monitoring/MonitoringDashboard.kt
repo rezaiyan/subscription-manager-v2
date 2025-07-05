@@ -637,27 +637,27 @@ private suspend fun checkAllServices(onResult: (HealthData?) -> Unit) {
         val services = listOf(
             Service(
                 name = "API Gateway",
-                url = "http://localhost:8080",
+                url = "http://localhost:8080/actuator/health",
                 category = "Gateway"
             ),
             Service(
                 name = "Eureka Server",
-                url = "http://localhost:8761",
+                url = "http://localhost:8761/actuator/health",
                 category = "Service Discovery"
             ),
             Service(
                 name = "Config Server",
-                url = "http://localhost:8888",
+                url = "http://localhost:8889/actuator/health",
                 category = "Configuration"
             ),
             Service(
                 name = "Main Service",
-                url = "http://localhost:8081",
+                url = "http://localhost:3000/actuator/health",
                 category = "Business Logic"
             ),
             Service(
                 name = "Create Subscription Service",
-                url = "http://localhost:8082",
+                url = "http://localhost:3001/actuator/health",
                 category = "Business Logic"
             )
         )
@@ -699,10 +699,15 @@ private suspend fun checkAllServices(onResult: (HealthData?) -> Unit) {
 private suspend fun checkServiceHealth(url: String): Health {
     return try {
         val startTime = Clock.System.now()
+        
+        // Simple fetch request
         val response = window.fetch(url).await() as Response
+        
         val endTime = Clock.System.now()
         val responseTime = (endTime - startTime).inWholeMilliseconds
 
+        println("🔍 Health check for $url: status=${response.status}, ok=${response.ok}")
+        
         if (response.ok) {
             Health(status = "up", responseTime = responseTime)
         } else {

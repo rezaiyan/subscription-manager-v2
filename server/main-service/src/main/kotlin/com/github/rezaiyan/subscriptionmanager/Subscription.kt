@@ -1,6 +1,7 @@
 package com.github.rezaiyan.subscriptionmanager
 
 import jakarta.persistence.*
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 import java.time.Instant
 
@@ -24,6 +25,8 @@ data class Subscription(
 
     val startDate: Instant = Instant.now(),
     val nextBillingDate: Instant? = null,
+    
+    @JsonProperty("active", "isActive")
     val active: Boolean = true,
 
     val createdAt: Instant = Instant.now()

@@ -1,6 +1,7 @@
 package com.github.rezaiyan.subscriptionmanager
 
 import jakarta.persistence.*
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 import java.time.Instant
 
@@ -24,10 +25,24 @@ data class Subscription(
 
     val startDate: Instant = Instant.now(),
     val nextBillingDate: Instant? = null,
+    
     val active: Boolean = true,
 
     val createdAt: Instant = Instant.now()
 ) {
+    // Secondary constructor to handle isActive field from frontend
+    constructor(
+        id: Long = 0,
+        name: String,
+        description: String? = null,
+        amount: BigDecimal,
+        frequency: SubscriptionFrequency,
+        startDate: Instant = Instant.now(),
+        nextBillingDate: Instant? = null,
+        isActive: Boolean = true,
+        createdAt: Instant = Instant.now()
+    ) : this(id, name, description, amount, frequency, startDate, nextBillingDate, isActive, createdAt)
+
     // Calculate monthly amount for yearly subscriptions
     fun getMonthlyAmount(): BigDecimal {
         return when (frequency) {

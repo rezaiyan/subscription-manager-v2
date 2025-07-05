@@ -54,6 +54,35 @@ build_services() {
         exit 1
     fi
     
+    # Verify JAR files exist
+    print_status "Verifying JAR files exist..."
+    local missing_jars=()
+    
+    # Check each service JAR
+    if [ ! -f "server/config-server/build/libs/"*.jar ]; then
+        missing_jars+=("config-server")
+    fi
+    if [ ! -f "server/eureka-server/build/libs/"*.jar ]; then
+        missing_jars+=("eureka-server")
+    fi
+    if [ ! -f "server/create-subscription-service/build/libs/"*.jar ]; then
+        missing_jars+=("create-subscription-service")
+    fi
+    if [ ! -f "server/main-service/build/libs/"*.jar ]; then
+        missing_jars+=("main-service")
+    fi
+    if [ ! -f "server/api-gateway/build/libs/"*.jar ]; then
+        missing_jars+=("api-gateway")
+    fi
+    
+    if [ ${#missing_jars[@]} -gt 0 ]; then
+        print_error "Missing JAR files for: ${missing_jars[*]}"
+        print_error "Please check the build output above for errors"
+        exit 1
+    fi
+    
+    print_success "All JAR files verified"
+    
     # Build compose app (web only to avoid iOS/Android build issues)
     print_status "Building compose app (web only)..."
     ./gradlew :composeApp:clean :composeApp:compileKotlinWasmJs -x test
@@ -100,6 +129,19 @@ cleanup_all() {
     print_status "Removing all volumes with subscriptionmanager in name..."
     docker volume ls | grep subscriptionmanager | awk '{print $2}' | xargs -r docker volume rm
     
+    # Remove Kafka and Zookeeper volumes specifically
+    print_status "Removing Kafka and Zookeeper volumes..."
+    docker volume rm subscription-manager-v2_kafka_data subscription-manager-v2_zookeeper_data 2>/dev/null || true
+    docker volume rm subscription-manager-kafka-data subscription-manager-zookeeper-data 2>/dev/null || true
+    docker volume rm subscription-manager-kafka-data-dev subscription-manager-zookeeper-data-dev 2>/dev/null || true
+    
+    # Remove any remaining Kafka/Zookeeper volumes (more aggressive)
+    print_status "Removing any remaining Kafka/Zookeeper volumes..."
+    docker volume ls | grep -E "(kafka|zookeeper)" | awk '{print $2}' | xargs -r docker volume rm 2>/dev/null || true
+    
+    # Force remove any volumes with kafka or zookeeper in the name
+    docker volume ls | grep -i -E "(kafka|zookeeper)" | awk '{print $2}' | xargs -r docker volume rm 2>/dev/null || true
+    
     # Remove all networks with subscription-manager in name
     print_status "Removing all networks with subscription-manager in name..."
     docker network ls | grep subscription-manager | awk '{print $1}' | xargs -r docker network rm
@@ -140,6 +182,28 @@ wait_for_healthy() {
     return 1
 }
 
+# Function to fix Kafka cluster ID issues
+fix_kafka_cluster_id() {
+    print_status "Fixing Kafka cluster ID issues..."
+    
+    # Stop Kafka and Zookeeper if running
+    docker-compose stop kafka zookeeper 2>/dev/null || true
+    
+    # Remove all possible Kafka and Zookeeper volumes
+    print_status "Removing Kafka and Zookeeper volumes..."
+    docker volume rm subscription-manager-v2_kafka_data subscription-manager-v2_zookeeper_data 2>/dev/null || true
+    docker volume rm subscription-manager-kafka-data subscription-manager-zookeeper-data 2>/dev/null || true
+    docker volume rm subscription-manager-kafka-data-dev subscription-manager-zookeeper-data-dev 2>/dev/null || true
+    
+    # Remove any remaining Kafka/Zookeeper volumes
+    docker volume ls | grep -E "(kafka|zookeeper)" | awk '{print $2}' | xargs -r docker volume rm 2>/dev/null || true
+    
+    # Clean up dangling volumes
+    docker volume prune -f
+    
+    print_success "Kafka cluster ID fix completed"
+}
+
 # Function to verify Kafka is working
 verify_kafka() {
     print_status "Verifying Kafka is working..."
@@ -148,7 +212,7 @@ verify_kafka() {
     sleep 10
     
     # Try to create a test topic using docker exec
-    if docker exec kafka kafka-topics --create --if-not-exists \
+    if docker exec subscription-manager-kafka kafka-topics --create --if-not-exists \
         --bootstrap-server localhost:9092 \
         --replication-factor 1 \
         --partitions 1 \
@@ -156,7 +220,7 @@ verify_kafka() {
         print_success "Kafka is working properly"
         
         # Clean up test topic
-        docker exec kafka kafka-topics --delete \
+        docker exec subscription-manager-kafka kafka-topics --delete \
             --bootstrap-server localhost:9092 \
             --topic test-topic > /dev/null 2>&1
         return 0
@@ -169,6 +233,41 @@ verify_kafka() {
 # Function to start services
 start_services() {
     print_status "Starting all services with Docker Compose..."
+    
+    # Fix Kafka cluster ID issues before starting
+    fix_kafka_cluster_id
+    
+    # Ensure JAR files exist before starting services
+    print_status "Ensuring JAR files exist before starting services..."
+    local missing_jars=()
+    
+    # Check each service JAR
+    if [ ! -f "server/config-server/build/libs/"*.jar ]; then
+        missing_jars+=("config-server")
+    fi
+    if [ ! -f "server/eureka-server/build/libs/"*.jar ]; then
+        missing_jars+=("eureka-server")
+    fi
+    if [ ! -f "server/create-subscription-service/build/libs/"*.jar ]; then
+        missing_jars+=("create-subscription-service")
+    fi
+    if [ ! -f "server/main-service/build/libs/"*.jar ]; then
+        missing_jars+=("main-service")
+    fi
+    if [ ! -f "server/api-gateway/build/libs/"*.jar ]; then
+        missing_jars+=("api-gateway")
+    fi
+    
+    if [ ${#missing_jars[@]} -gt 0 ]; then
+        print_warning "Missing JAR files for: ${missing_jars[*]}"
+        print_status "Rebuilding missing services..."
+        ./gradlew :server:config-server:build :server:eureka-server:build :server:create-subscription-service:build :server:main-service:build :server:api-gateway:build -x test
+        if [ $? -ne 0 ]; then
+            print_error "Failed to rebuild server services"
+            exit 1
+        fi
+        print_success "Services rebuilt successfully"
+    fi
     
     # Start infrastructure services first
     print_status "Starting infrastructure services (Zookeeper, Kafka, PostgreSQL)..."
@@ -315,6 +414,25 @@ case "${1:-}" in
     "start-apps")
         start_app_services
         ;;
+    "fix-kafka")
+        fix_kafka_cluster_id
+        print_status "Starting Kafka and Zookeeper..."
+        docker-compose up -d zookeeper kafka
+        wait_for_healthy "zookeeper" 20
+        wait_for_healthy "kafka" 40
+        verify_kafka
+        print_success "Kafka fix completed and verified"
+        ;;
+    "rebuild-jars")
+        print_status "Rebuilding all JAR files..."
+        ./gradlew :server:config-server:build :server:eureka-server:build :server:create-subscription-service:build :server:main-service:build :server:api-gateway:build -x test
+        if [ $? -eq 0 ]; then
+            print_success "All JAR files rebuilt successfully"
+        else
+            print_error "Failed to rebuild JAR files"
+            exit 1
+        fi
+        ;;
     "help"|"-h"|"--help")
         echo "Usage: $0 [command]"
         echo ""
@@ -327,6 +445,8 @@ case "${1:-}" in
         echo "  build      Build all services only"
         echo "  cleanup    Cleanup all Docker resources"
         echo "  start-apps Start application services only (requires infrastructure)"
+        echo "  fix-kafka  Fix Kafka cluster ID issues and restart Kafka/Zookeeper"
+        echo "  rebuild-jars Rebuild all JAR files"
         echo "  help       Show this help message"
         ;;
     "")

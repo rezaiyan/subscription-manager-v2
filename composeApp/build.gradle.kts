@@ -80,6 +80,7 @@ kotlin {
         }
         wasmJsMain.dependencies {
             implementation(libs.koin.core)
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

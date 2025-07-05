@@ -53,7 +53,8 @@ fun SubscriptionListScreen(
     onRefresh: () -> Unit,
     onToggleActive: (Long) -> Unit,
     onDelete: (Long) -> Unit,
-    onAddNew: () -> Unit
+    onAddNew: () -> Unit,
+    onOpenMonitoring: () -> Unit = {}
 ) {
     val subscriptionList = subscriptions
     val subscriptionTotals = totals
@@ -80,9 +81,7 @@ fun SubscriptionListScreen(
                         Icon(Icons.Default.Add, contentDescription = "Add Subscription")
                     }
                     IconButton(
-                        onClick = { 
-                            //todo: Navigate to monitoring dashboard
-                        }
+                        onClick = onOpenMonitoring
                     ) {
                         Icon(Icons.Default.Monitor, contentDescription = "Monitoring Dashboard")
                     }

@@ -28,6 +28,14 @@
         }
     </style>
     <script type="application/javascript" src="composeApp.js"></script>
+    <script>
+        // Handle client-side routing for SPA
+        if (window.location.pathname !== '/' && !window.location.pathname.startsWith('/static/')) {
+            // For any route that's not the root or static assets, redirect to root
+            // The client-side app will handle the routing
+            window.history.replaceState(null, '', '/');
+        }
+    </script>
 </head>
 <body>
 </body>

@@ -135,7 +135,10 @@ fun MonitoringDashboard(onBackToMain: () -> Unit = {}) {
                         ),
                         actions = {
                             IconButton(
-                                onClick = onBackToMain
+                                onClick = {
+                                    // Use browser back button for proper navigation
+                                    window.history.back()
+                                }
                             ) {
                                 Icon(
                                     Icons.Default.ArrowBack, 

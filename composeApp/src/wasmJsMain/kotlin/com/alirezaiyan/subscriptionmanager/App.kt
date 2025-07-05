@@ -18,6 +18,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,42 +32,74 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.alirezaiyan.subscriptionmanager.di.webModule
+import com.alirezaiyan.subscriptionmanager.monitoring.MonitoringDashboard
 import org.koin.core.context.startKoin
+import kotlinx.browser.window
+import org.w3c.dom.events.Event
+
+enum class Screen(val path: String) {
+    MAIN("/"),
+    MONITORING("/monitoring");
+
+    companion object {
+        fun fromPath(path: String): Screen = entries.firstOrNull { it.path == path } ?: MAIN
+    }
+}
 
 @Composable
 actual fun App() {
     var isLoading by remember { mutableStateOf(true) }
     var viewModel by remember { mutableStateOf<SubscriptionViewModel?>(null) }
+    var currentScreen by remember { mutableStateOf(Screen.fromPath(window.location.pathname)) }
 
-    // Initialize Koin for WASM
+    // Initialize Koin and ViewModel
     LaunchedEffect(Unit) {
         println("🚀 WASM App: Starting Koin initialization")
-        println("📦 WASM App: Loading webModule: $webModule")
-
-        // Create inline module as fallback
         startKoin {
             modules(webModule)
         }
         println("✅ WASM App: Koin initialized successfully")
 
-        // Get the ViewModel instance
         viewModel = org.koin.core.context.GlobalContext.get().get<SubscriptionViewModel>()
         println("✅ WASM App: ViewModel retrieved successfully")
 
-        // Load initial data
         viewModel?.loadSubscriptions()
         println("🔄 WASM App: Loading subscriptions...")
 
-        // Simulate loading time
         kotlinx.coroutines.delay(1000)
         isLoading = false
         println("✅ WASM App: Loading screen completed")
     }
 
+    // Listen for browser navigation changes
+    DisposableEffect(Unit) {
+        val popStateListener: (Event) -> Unit = {
+            currentScreen = Screen.fromPath(window.location.pathname)
+        }
+        window.addEventListener("popstate", popStateListener)
+        onDispose {
+            window.removeEventListener("popstate", popStateListener)
+        }
+    }
+
     if (isLoading || viewModel == null) {
         LoadingScreen()
     } else {
-        MainApp(viewModel!!)
+        when (currentScreen) {
+            Screen.MAIN -> MainApp(
+                viewModel = viewModel!!,
+                onNavigateToMonitoring = {
+                    window.history.pushState(null, "", "/monitoring")
+                    window.dispatchEvent(Event("popstate"))
+                }
+            )
+
+            Screen.MONITORING -> MonitoringDashboard(
+                onBackToMain = {
+                    window.history.back()
+                }
+            )
+        }
     }
 }
 
@@ -134,7 +167,7 @@ private fun LoadingScreen() {
 }
 
 @Composable
-private fun MainApp(viewModel: SubscriptionViewModel) {
+private fun MainApp(viewModel: SubscriptionViewModel, onNavigateToMonitoring: () -> Unit) {
     var showAddDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -165,7 +198,8 @@ private fun MainApp(viewModel: SubscriptionViewModel) {
                 },
                 onToggleActive = { id -> viewModel.toggleSubscriptionActive(id) },
                 onDelete = { id -> viewModel.deleteSubscription(id) },
-                onAddNew = { showAddDialog = true }
+                onAddNew = { showAddDialog = true },
+                onOpenMonitoring = onNavigateToMonitoring
             )
 
             // Add Subscription Dialog

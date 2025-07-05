@@ -26,11 +26,23 @@ data class Subscription(
     val startDate: Instant = Instant.now(),
     val nextBillingDate: Instant? = null,
     
-    @JsonProperty("active", "isActive")
     val active: Boolean = true,
 
     val createdAt: Instant = Instant.now()
 ) {
+    // Secondary constructor to handle isActive field from frontend
+    constructor(
+        id: Long = 0,
+        name: String,
+        description: String? = null,
+        amount: BigDecimal,
+        frequency: SubscriptionFrequency,
+        startDate: Instant = Instant.now(),
+        nextBillingDate: Instant? = null,
+        isActive: Boolean = true,
+        createdAt: Instant = Instant.now()
+    ) : this(id, name, description, amount, frequency, startDate, nextBillingDate, isActive, createdAt)
+
     // Calculate monthly amount for yearly subscriptions
     fun getMonthlyAmount(): BigDecimal {
         return when (frequency) {

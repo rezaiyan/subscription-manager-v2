@@ -1,19 +1,17 @@
 services:
   # Zookeeper - Required for Kafka
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.0
+    image: zookeeper:3.8.2
     hostname: zookeeper
-    container_name: zookeeper
+    container_name: subscription-manager-zookeeper
     ports:
       - "2181:2181"
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_DATA_DIR: /var/lib/zookeeper/data
-      ZOOKEEPER_DATA_LOG_DIR: /var/lib/zookeeper/log
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181
+      ZOO_4LW_COMMANDS_WHITELIST: "*"
     volumes:
-      - zookeeper_data:/var/lib/zookeeper/data
-      - zookeeper_log:/var/lib/zookeeper/log
+      - zookeeper_data:/data
     healthcheck:
       test: ["CMD-SHELL", "echo ruok | nc localhost 2181 || exit 1"]
       interval: 15s
@@ -26,7 +24,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:7.4.0
     hostname: kafka
-    container_name: kafka
+    container_name: subscription-manager-kafka
     depends_on:
       zookeeper:
         condition: service_healthy
@@ -64,7 +62,7 @@ services:
   # Main application database
   postgres-main:
     image: postgres:15
-    container_name: postgres-main
+    container_name: subscription-manager-postgres-main
     environment:
       POSTGRES_DB: subscription_main_db
       POSTGRES_USER: ali.rezaiyan
@@ -86,7 +84,7 @@ services:
   # Create subscription service database
   postgres-create:
     image: postgres:15
-    container_name: postgres-create
+    container_name: subscription-manager-postgres-create
     environment:
       POSTGRES_DB: subscription_create_db
       POSTGRES_USER: ali.rezaiyan
@@ -110,7 +108,7 @@ services:
     build:
       context: .
       dockerfile: server/config-server/Dockerfile
-    container_name: config-server
+    container_name: subscription-manager-config-server
     ports:
       - "8889:8888"
     depends_on:
@@ -134,7 +132,7 @@ services:
     build:
       context: .
       dockerfile: server/eureka-server/Dockerfile
-    container_name: eureka-server
+    container_name: subscription-manager-eureka-server
     ports:
       - "8761:8761"
     depends_on:
@@ -163,7 +161,7 @@ services:
     build:
       context: .
       dockerfile: server/create-subscription-service/Dockerfile
-    container_name: create-subscription-service
+    container_name: subscription-manager-create-subscription-service
     ports:
       - "3001:3001"
     depends_on:
@@ -185,7 +183,7 @@ services:
       SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: earliest
       SPRING_KAFKA_CONSUMER_GROUP_ID: subscription-group
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:3001/actuator/health || exit 1"]
+      test: ["CMD-SHELL", "timeout 10 bash -c '</dev/tcp/localhost/3001' || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -197,7 +195,7 @@ services:
     build:
       context: .
       dockerfile: server/main-service/Dockerfile
-    container_name: subscription-manager
+    container_name: subscription-manager-main
     ports:
       - "3000:3000"
     depends_on:
@@ -221,7 +219,7 @@ services:
       SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: earliest
       SPRING_KAFKA_CONSUMER_GROUP_ID: subscription-manager-group
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:3000/actuator/health || exit 1"]
+      test: ["CMD-SHELL", "timeout 10 bash -c '</dev/tcp/localhost/3000' || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -233,7 +231,7 @@ services:
     build:
       context: .
       dockerfile: server/api-gateway/Dockerfile
-    container_name: api-gateway
+    container_name: subscription-manager-api-gateway
     ports:
       - "8080:8080"
     depends_on:
@@ -248,7 +246,7 @@ services:
       SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_ENABLED: true
       SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_LOWERCASE_SERVICE_ID: true
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      test: ["CMD-SHELL", "timeout 10 bash -c '</dev/tcp/localhost/8080' || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -260,7 +258,7 @@ services:
     build:
       context: ./composeApp
       dockerfile: Dockerfile
-    container_name: website
+    container_name: subscription-manager-website
     ports:
       - "8081:3002"
     depends_on:
@@ -269,7 +267,7 @@ services:
     environment:
       - API_BASE_URL=http://api-gateway:8080
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:3002/ || exit 1"]
+      test: ["CMD-SHELL", "timeout 10 bash -c '</dev/tcp/localhost/3002' || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -284,8 +282,6 @@ volumes:
   kafka_data:
     driver: local
   zookeeper_data:
-    driver: local
-  zookeeper_log:
     driver: local
 
 networks:

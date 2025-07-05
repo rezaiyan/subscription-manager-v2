@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Subscription Manager Services Deployment Script
+# 
+# Recent fixes (2025-07-05):
+# - Fixed health checks: Changed from curl to TCP connection checks
+# - Fixed Kafka/Zookeeper cluster ID issues with proper volume management
+# - Added comprehensive cleanup functionality
+# - Increased timeouts for Spring Boot application services
+# - Added start-apps command for development workflow
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -56,11 +65,56 @@ build_services() {
     print_success "All services built successfully"
 }
 
-# Function to stop existing containers
-stop_existing() {
-    print_status "Stopping existing containers..."
+# Function to cleanup all resources
+cleanup_all() {
+    print_status "Performing complete cleanup of all resources..."
+    
+    # Stop all containers
+    print_status "Stopping all containers..."
     docker-compose down --remove-orphans
-    print_success "Existing containers stopped"
+    
+    # Remove all containers with subscription-manager related names
+    print_status "Removing all containers with subscription-manager in name..."
+    docker ps -a --filter "name=subscription-manager" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=zookeeper" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=kafka" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=postgres" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=config-server" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=eureka-server" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=create-subscription-service" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=api-gateway" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=website" --format "{{.ID}}" | xargs -r docker rm -f
+    # Also remove any old containers with generic names
+    docker ps -a --filter "name=^zookeeper$" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=^kafka$" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=^postgres-main$" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=^postgres-create$" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=^config-server$" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=^eureka-server$" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=^create-subscription-service$" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=^subscription-manager$" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=^api-gateway$" --format "{{.ID}}" | xargs -r docker rm -f
+    docker ps -a --filter "name=^website$" --format "{{.ID}}" | xargs -r docker rm -f
+    
+    # Remove all volumes with subscriptionmanager in name
+    print_status "Removing all volumes with subscriptionmanager in name..."
+    docker volume ls | grep subscriptionmanager | awk '{print $2}' | xargs -r docker volume rm
+    
+    # Remove all networks with subscription-manager in name
+    print_status "Removing all networks with subscription-manager in name..."
+    docker network ls | grep subscription-manager | awk '{print $1}' | xargs -r docker network rm
+    
+    # Remove all images with subscription-manager in name
+    print_status "Removing all images with subscription-manager in name..."
+    docker images | grep subscription-manager | awk '{print $3}' | xargs -r docker rmi -f
+    
+    # Remove dangling resources
+    print_status "Removing dangling resources..."
+    docker image prune -f
+    docker volume prune -f
+    docker network prune -f
+    
+    print_success "Complete cleanup finished"
 }
 
 # Function to wait for service to be healthy
@@ -145,17 +199,17 @@ start_services() {
     print_status "Starting application services..."
     docker-compose up -d create-subscription-service subscription-manager api-gateway
     
-    # Wait for application services to be ready
-    wait_for_healthy "create-subscription-service" 30
-    wait_for_healthy "subscription-manager" 30
-    wait_for_healthy "api-gateway" 20
+    # Wait for application services to be ready (longer timeouts for Spring Boot apps)
+    wait_for_healthy "create-subscription-service" 45
+    wait_for_healthy "subscription-manager" 45
+    wait_for_healthy "api-gateway" 30
     
     # Start frontend
     print_status "Starting frontend..."
     docker-compose up -d website
     
     # Wait for frontend to be ready
-    wait_for_healthy "website" 15
+    wait_for_healthy "website" 20
     
     print_success "All services started successfully"
 }
@@ -185,6 +239,29 @@ show_logs() {
     docker-compose logs -f
 }
 
+# Function to start just application services (for development)
+start_app_services() {
+    print_status "Starting application services only..."
+    
+    # Check if infrastructure is running
+    if ! docker-compose ps | grep -q "subscription-manager-zookeeper.*healthy"; then
+        print_error "Infrastructure services are not running. Please run './run-all.sh' first."
+        exit 1
+    fi
+    
+    # Start application services
+    docker-compose up -d create-subscription-service subscription-manager api-gateway website
+    
+    # Wait for application services to be ready
+    wait_for_healthy "create-subscription-service" 45
+    wait_for_healthy "subscription-manager" 45
+    wait_for_healthy "api-gateway" 30
+    wait_for_healthy "website" 20
+    
+    print_success "Application services started successfully"
+    show_status
+}
+
 # Main execution
 main() {
     print_status "Starting Subscription Manager Services"
@@ -196,8 +273,8 @@ main() {
     # Build services
     build_services
     
-    # Stop existing containers
-    stop_existing
+    # Cleanup all resources
+    cleanup_all
     
     # Start services
     start_services
@@ -232,6 +309,12 @@ case "${1:-}" in
     "build")
         build_services
         ;;
+    "cleanup")
+        cleanup_all
+        ;;
+    "start-apps")
+        start_app_services
+        ;;
     "help"|"-h"|"--help")
         echo "Usage: $0 [command]"
         echo ""
@@ -242,6 +325,8 @@ case "${1:-}" in
         echo "  stop       Stop all services"
         echo "  restart    Restart all services"
         echo "  build      Build all services only"
+        echo "  cleanup    Cleanup all Docker resources"
+        echo "  start-apps Start application services only (requires infrastructure)"
         echo "  help       Show this help message"
         ;;
     "")

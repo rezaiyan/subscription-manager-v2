@@ -7,17 +7,20 @@ echo "=============================================="
 echo "Stopping all containers..."
 docker-compose down
 
-echo "Removing Kafka and Zookeeper data volumes..."
+echo "Removing all Kafka and Zookeeper data volumes..."
 docker volume rm subscriptionmanager_kafka_data subscriptionmanager_zookeeper_data 2>/dev/null || true
+
+echo "Forcing removal of any remaining volumes..."
+docker volume ls | grep -E "(kafka|zookeeper)" | awk '{print $2}' | xargs -r docker volume rm 2>/dev/null || true
 
 echo "Starting infrastructure services fresh..."
 docker-compose up -d zookeeper kafka
 
 echo "Waiting for Zookeeper to be healthy..."
-sleep 10
+sleep 15
 
 echo "Waiting for Kafka to be healthy..."
-sleep 30
+sleep 45
 
 echo "Checking service status..."
 docker-compose ps zookeeper kafka

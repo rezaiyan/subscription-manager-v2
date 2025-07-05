@@ -2,6 +2,10 @@
 
 set -e
 
+# =============================================================================
+# CONFIGURATION
+# =============================================================================
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -12,17 +16,9 @@ NC='\033[0m' # No Color
 # Ensure logs directory exists
 mkdir -p logs
 
-# Configuration for the subscription manager services
-
-# Function to find a free port
-find_free_port() {
-    local base_port=$1
-    local port=$base_port
-    while lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; do
-        port=$((port+10000))
-    done
-    echo $port
-}
+# =============================================================================
+# UTILITY FUNCTIONS
+# =============================================================================
 
 # Function to check if a port is available and kill processes if needed
 check_port() {
@@ -90,104 +86,15 @@ cleanup() {
     if [ ! -z "$CREATE_PID" ]; then kill $CREATE_PID 2>/dev/null || true; fi
     if [ ! -z "$SERVER_PID" ]; then kill $SERVER_PID 2>/dev/null || true; fi
     if [ ! -z "$GATEWAY_PID" ]; then kill $GATEWAY_PID 2>/dev/null || true; fi
-    if [ ! -z "$WEBSITE_PID" ]; then kill $WEBSITE_PID 2>/dev/null || true; fi
-    # if [ ! -z "$MONITOR_PID" ]; then kill $MONITOR_PID 2>/dev/null || true; fi
     echo -e "${GREEN}Cleanup completed${NC}"
 }
 
 # Set up trap to cleanup on script exit
 trap cleanup EXIT
 
-echo -e "${BLUE}=== Subscription Manager - Complete Startup Script ===${NC}"
-
-# Check if Docker is running, try to start if not
-if ! docker info >/dev/null 2>&1; then
-    echo -e "${YELLOW}Docker is not running. Attempting to start Docker Desktop...${NC}"
-    open -a Docker
-    
-    # Wait a bit for Docker to start launching
-    sleep 3
-    
-    echo -n "Waiting for Docker to start"
-    max_attempts=90  # Increased to 90 attempts (3 minutes)
-    attempt=1
-    while ! docker info >/dev/null 2>&1; do
-        if [ $attempt -ge $max_attempts ]; then
-            echo -e "\n${RED}Docker did not start after $((max_attempts*2)) seconds. Please start Docker Desktop manually and try again.${NC}"
-            echo -e "${YELLOW}You can also try:${NC}"
-            echo -e "  1. Open Docker Desktop manually from Applications"
-            echo -e "  2. Wait for it to fully start"
-            echo -e "  3. Run this script again"
-            exit 1
-        fi
-        echo -n "."
-        sleep 2
-        attempt=$((attempt + 1))
-    done
-    echo -e "\n${GREEN}Docker is now running!${NC}"
-    # Give Docker a moment to fully initialize
-    sleep 15  # Increased to 15 seconds for full initialization
-else
-    echo -e "${GREEN}Docker is running${NC}"
-fi
-
-# Additional check to ensure Docker is fully ready
-echo -e "${BLUE}Verifying Docker is fully ready...${NC}"
-max_attempts=30
-attempt=1
-while [ $attempt -le $max_attempts ]; do
-    if docker version >/dev/null 2>&1 && docker ps >/dev/null 2>&1; then
-        echo -e "${GREEN}Docker is fully ready!${NC}"
-        break
-    fi
-    echo -e "${YELLOW}Attempt $attempt/$max_attempts: Docker not fully ready yet...${NC}"
-    sleep 2
-    attempt=$((attempt + 1))
-done
-
-if [ $attempt -gt $max_attempts ]; then
-    echo -e "${RED}Docker did not become fully ready. Continuing anyway...${NC}"
-fi
-
-# Verify Docker Compose is available
-if ! docker-compose --version >/dev/null 2>&1; then
-    echo -e "${RED}Docker Compose is not available. Please install Docker Compose and try again.${NC}"
-    exit 1
-fi
-
-# Check all required ports
-echo -e "${BLUE}Checking port availability...${NC}"
-port_issues=false
-
-check_port 2181 "Zookeeper" || port_issues=true
-check_port 9092 "Kafka" || port_issues=true
-check_port 5432 "PostgreSQL Main" || port_issues=true
-check_port 5433 "PostgreSQL Create" || port_issues=true
-check_port 8761 "Eureka Server" || port_issues=true
-check_port 8888 "Config Server" || port_issues=true
-check_port 3001 "Create Subscription Service" || port_issues=true
-check_port 3000 "Main Server" || port_issues=true
-check_port 8080 "API Gateway" || port_issues=true
-check_port 8082 "Monitoring Dashboard" || port_issues=true
-
-if [ "$port_issues" = true ]; then
-    echo -e "${YELLOW}Some ports could not be freed. Continuing anyway...${NC}"
-    echo -e "${YELLOW}Services may fail to start if ports remain occupied.${NC}"
-    sleep 3
-fi
-
-# Stop only our specific services if they're running, without affecting other Docker containers
-echo -e "${BLUE}Stopping any running subscription manager containers...${NC}"
-if docker-compose -f config/docker-compose.yml ps | grep -q "subscription-manager\|api-gateway\|eureka-server\|config-server\|create-subscription-service"; then
-    docker-compose -f config/docker-compose.yml stop api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
-    docker-compose -f config/docker-compose.yml rm -f api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
-else
-    echo -e "${GREEN}No subscription manager containers running${NC}"
-fi
-
-# Build Docker images (if needed)
-echo -e "${BLUE}Building Docker images...${NC}"
-docker-compose -f config/docker-compose.yml build api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
+# =============================================================================
+# DOCKER MANAGEMENT FUNCTIONS
+# =============================================================================
 
 # Function to check Kafka container state and handle accordingly
 check_kafka_container() {
@@ -239,15 +146,26 @@ cleanup_zookeeper_state() {
         return 1
     fi
     
-    # Clean up Kafka broker registrations
-    echo -e "${YELLOW}Removing existing Kafka broker registrations from Zookeeper...${NC}"
-    docker exec zookeeper zkCli.sh -server localhost:2181 rmr /brokers 2>/dev/null || true
-    docker exec zookeeper zkCli.sh -server localhost:2181 rmr /kafka 2>/dev/null || true
-    docker exec zookeeper zkCli.sh -server localhost:2181 rmr /admin 2>/dev/null || true
-    docker exec zookeeper zkCli.sh -server localhost:2181 rmr /config 2>/dev/null || true
+    # Try to clean up Kafka broker registrations (skip if tools not available)
+    echo -e "${YELLOW}Attempting to clean up Kafka broker registrations from Zookeeper...${NC}"
     
-    echo -e "${GREEN}Zookeeper cleanup completed${NC}"
+    # Check if zkCli.sh is available
+    if docker exec zookeeper which zkCli.sh >/dev/null 2>&1; then
+        echo -e "${GREEN}Using zkCli.sh for cleanup${NC}"
+        docker exec zookeeper zkCli.sh -server localhost:2181 rmr /brokers 2>/dev/null || true
+        docker exec zookeeper zkCli.sh -server localhost:2181 rmr /kafka 2>/dev/null || true
+        docker exec zookeeper zkCli.sh -server localhost:2181 rmr /admin 2>/dev/null || true
+        docker exec zookeeper zkCli.sh -server localhost:2181 rmr /config 2>/dev/null || true
+        echo -e "${GREEN}Zookeeper cleanup completed using zkCli.sh${NC}"
+    else
+        echo -e "${YELLOW}zkCli.sh not available, skipping Zookeeper cleanup${NC}"
+        echo -e "${YELLOW}This is normal for newer Zookeeper images. Kafka will handle conflicts automatically.${NC}"
+    fi
 }
+
+# =============================================================================
+# DATABASE MANAGEMENT FUNCTIONS
+# =============================================================================
 
 # Function to initialize PostgreSQL databases with comprehensive checks
 initialize_databases() {
@@ -333,16 +251,105 @@ initialize_databases() {
     echo -e "${GREEN}Database initialization and verification completed successfully${NC}"
 }
 
-# Place this function call before starting infrastructure services
+# =============================================================================
+# MAIN SCRIPT EXECUTION
+# =============================================================================
+
+echo -e "${BLUE}=== Subscription Manager - Complete Startup Script ===${NC}"
+
+# Check if Docker is running
+if ! docker info >/dev/null 2>&1; then
+    echo -e "${RED}Docker is not running. Please start Docker and try again.${NC}"
+    echo -e "${YELLOW}You can start Docker with:${NC}"
+    echo -e "  • Docker Desktop: Open Docker Desktop application"
+    echo -e "  • Docker CLI: sudo systemctl start docker (Linux)"
+    echo -e "  • Docker CLI: brew services start docker (macOS with Homebrew)"
+    echo -e "  • Docker CLI: sudo service docker start (Ubuntu/Debian)"
+    exit 1
+else
+    echo -e "${GREEN}Docker is running${NC}"
+fi
+
+# Additional check to ensure Docker is fully ready
+echo -e "${BLUE}Verifying Docker is fully ready...${NC}"
+max_attempts=30
+attempt=1
+while [ $attempt -le $max_attempts ]; do
+    if docker version >/dev/null 2>&1 && docker ps >/dev/null 2>&1; then
+        echo -e "${GREEN}Docker is fully ready!${NC}"
+        break
+    fi
+    echo -e "${YELLOW}Attempt $attempt/$max_attempts: Docker not fully ready yet...${NC}"
+    sleep 2
+    attempt=$((attempt + 1))
+done
+
+if [ $attempt -gt $max_attempts ]; then
+    echo -e "${RED}Docker did not become fully ready. Continuing anyway...${NC}"
+fi
+
+# Verify Docker Compose is available (try both standalone and plugin versions)
+if ! docker-compose --version >/dev/null 2>&1 && ! docker compose version >/dev/null 2>&1; then
+    echo -e "${RED}Docker Compose is not available. Please install Docker Compose and try again.${NC}"
+    echo -e "${YELLOW}You can install Docker Compose with:${NC}"
+    echo -e "  • Docker CLI plugin: docker compose (included with Docker 20.10+)"
+    echo -e "  • Standalone: pip install docker-compose"
+    echo -e "  • Package manager: brew install docker-compose (macOS)"
+    exit 1
+fi
+
+# Use docker compose (plugin) if available, otherwise fall back to docker-compose (standalone)
+if docker compose version >/dev/null 2>&1; then
+    DOCKER_COMPOSE="docker compose"
+    echo -e "${GREEN}Using Docker Compose plugin${NC}"
+else
+    DOCKER_COMPOSE="docker-compose"
+    echo -e "${GREEN}Using Docker Compose standalone${NC}"
+fi
+
+# Check all required ports
+echo -e "${BLUE}Checking port availability...${NC}"
+port_issues=false
+
+check_port 2181 "Zookeeper" || port_issues=true
+check_port 9092 "Kafka" || port_issues=true
+check_port 5432 "PostgreSQL Main" || port_issues=true
+check_port 5433 "PostgreSQL Create" || port_issues=true
+check_port 8761 "Eureka Server" || port_issues=true
+check_port 8888 "Config Server" || port_issues=true
+check_port 3001 "Create Subscription Service" || port_issues=true
+check_port 3000 "Main Server" || port_issues=true
+check_port 8080 "API Gateway" || port_issues=true
+
+if [ "$port_issues" = true ]; then
+    echo -e "${YELLOW}Some ports could not be freed. Continuing anyway...${NC}"
+    echo -e "${YELLOW}Services may fail to start if ports remain occupied.${NC}"
+    sleep 3
+fi
+
+# Stop only our specific services if they're running, without affecting other Docker containers
+echo -e "${BLUE}Stopping any running subscription manager containers...${NC}"
+if $DOCKER_COMPOSE -f config/docker-compose.yml ps | grep -q "subscription-manager\|api-gateway\|eureka-server\|config-server\|create-subscription-service"; then
+    $DOCKER_COMPOSE -f config/docker-compose.yml stop api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
+    $DOCKER_COMPOSE -f config/docker-compose.yml rm -f api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
+else
+    echo -e "${GREEN}No subscription manager containers running${NC}"
+fi
+
+# Build Docker images (if needed)
+echo -e "${BLUE}Building Docker images...${NC}"
+$DOCKER_COMPOSE -f config/docker-compose.yml build api-gateway subscription-manager eureka-server config-server create-subscription-service zookeeper postgres-main postgres-create kafka 2>/dev/null || true
+
+# Check Kafka container state
 check_kafka_container
 
 # DEVELOPMENT ONLY: Always start with a clean Zookeeper/Kafka state (wipes all data)
 echo -e "${YELLOW}Wiping all Docker containers and volumes for a clean state (development only)...${NC}"
-docker-compose -f config/docker-compose.yml down -v
+$DOCKER_COMPOSE -f config/docker-compose.yml down -v
 
 # Start infrastructure services first
 echo -e "${BLUE}Starting infrastructure services...${NC}"
-docker-compose -f config/docker-compose.yml up -d zookeeper postgres-main postgres-create
+$DOCKER_COMPOSE -f config/docker-compose.yml up -d zookeeper postgres-main postgres-create
 
 # Wait for PostgreSQL to be ready and initialize databases
 sleep 5
@@ -354,7 +361,7 @@ cleanup_zookeeper_state
 
 # Now start Kafka after cleanup
 echo -e "${BLUE}Starting Kafka...${NC}"
-docker-compose -f config/docker-compose.yml up -d kafka
+$DOCKER_COMPOSE -f config/docker-compose.yml up -d kafka
 
 # Wait for infrastructure to be ready
 echo -e "${BLUE}Waiting for infrastructure services to be ready...${NC}"
@@ -415,8 +422,6 @@ echo "Main Server PID: $SERVER_PID"
 # Wait for Main Server to be ready
 wait_for_service "http://localhost:3000/actuator/health" "Main Server"
 
-# Note: Port checking is already done above, so we can proceed with starting services
-
 # Start API Gateway
 echo -e "${BLUE}Starting API Gateway...${NC}"
 ./gradlew :server:api-gateway:bootRun > logs/api-gateway.log 2>&1 &
@@ -426,24 +431,20 @@ echo "API Gateway PID: $GATEWAY_PID"
 # Wait for API Gateway to be ready
 wait_for_service "http://localhost:8080/actuator/health" "API Gateway"
 
-# Start the website application (Compose Multiplatform)
-echo -e "${BLUE}Starting Website Application...${NC}"
-cd composeApp
-../gradlew wasmJsBrowserDevelopmentRun > ../logs/website.log 2>&1 &
-WEBSITE_PID=$!
-cd ..
-echo "Website PID: $WEBSITE_PID"
-
-# Start the monitoring dashboard (commented out - directory doesn't exist)
-# echo -e "${BLUE}Starting Monitoring Dashboard...${NC}"
-# cd monitoring-app
-# ./gradlew run > ../logs/monitor.log 2>&1 &
-# MONITOR_PID=$!
+# Website application should be started separately
+# echo -e "${BLUE}Starting Website Application...${NC}"
+# cd composeApp
+# ../gradlew wasmJsBrowserDevelopmentRun > ../logs/website.log 2>&1 &
+# WEBSITE_PID=$!
 # cd ..
-# echo "Monitoring Dashboard PID: $MONITOR_PID"
+# echo "Website PID: $WEBSITE_PID"
 
 # Wait a moment for services to start
 sleep 5
+
+# =============================================================================
+# FINAL STATUS
+# =============================================================================
 
 echo -e "${GREEN}=== All Services Started Successfully! ===${NC}"
 echo -e "${GREEN}Services running:${NC}"
@@ -456,7 +457,7 @@ echo -e "  • Config Server: ${GREEN}http://localhost:8888${NC}"
 echo -e "  • Create Subscription Service: ${GREEN}http://localhost:3001${NC}"
 echo -e "  • Main Server: ${GREEN}http://localhost:3000${NC}"
 echo -e "  • API Gateway: ${GREEN}http://localhost:8080${NC}"
-echo -e "  • Website: ${GREEN}http://localhost:8081${NC}"
+echo -e "${YELLOW}Note: Website should be started separately with: cd composeApp && ../gradlew wasmJsBrowserDevelopmentRun${NC}"
 
 echo -e "${BLUE}Log files are available in the logs/ directory${NC}"
 echo -e "${YELLOW}Press Ctrl+C to stop all services${NC}"

@@ -91,7 +91,7 @@ cleanup() {
     if [ ! -z "$SERVER_PID" ]; then kill $SERVER_PID 2>/dev/null || true; fi
     if [ ! -z "$GATEWAY_PID" ]; then kill $GATEWAY_PID 2>/dev/null || true; fi
     if [ ! -z "$WEBSITE_PID" ]; then kill $WEBSITE_PID 2>/dev/null || true; fi
-    if [ ! -z "$MONITOR_PID" ]; then kill $MONITOR_PID 2>/dev/null || true; fi
+    # if [ ! -z "$MONITOR_PID" ]; then kill $MONITOR_PID 2>/dev/null || true; fi
     echo -e "${GREEN}Cleanup completed${NC}"
 }
 
@@ -109,7 +109,7 @@ if ! docker info >/dev/null 2>&1; then
     sleep 3
     
     echo -n "Waiting for Docker to start"
-    max_attempts=60  # Increased from 30 to 60 attempts
+    max_attempts=90  # Increased to 90 attempts (3 minutes)
     attempt=1
     while ! docker info >/dev/null 2>&1; do
         if [ $attempt -ge $max_attempts ]; then
@@ -126,9 +126,27 @@ if ! docker info >/dev/null 2>&1; then
     done
     echo -e "\n${GREEN}Docker is now running!${NC}"
     # Give Docker a moment to fully initialize
-    sleep 10  # Increased from 5 to 10 seconds
+    sleep 15  # Increased to 15 seconds for full initialization
 else
     echo -e "${GREEN}Docker is running${NC}"
+fi
+
+# Additional check to ensure Docker is fully ready
+echo -e "${BLUE}Verifying Docker is fully ready...${NC}"
+max_attempts=30
+attempt=1
+while [ $attempt -le $max_attempts ]; do
+    if docker version >/dev/null 2>&1 && docker ps >/dev/null 2>&1; then
+        echo -e "${GREEN}Docker is fully ready!${NC}"
+        break
+    fi
+    echo -e "${YELLOW}Attempt $attempt/$max_attempts: Docker not fully ready yet...${NC}"
+    sleep 2
+    attempt=$((attempt + 1))
+done
+
+if [ $attempt -gt $max_attempts ]; then
+    echo -e "${RED}Docker did not become fully ready. Continuing anyway...${NC}"
 fi
 
 # Verify Docker Compose is available
@@ -146,7 +164,7 @@ check_port 9092 "Kafka" || port_issues=true
 check_port 5432 "PostgreSQL Main" || port_issues=true
 check_port 5433 "PostgreSQL Create" || port_issues=true
 check_port 8761 "Eureka Server" || port_issues=true
-check_port 8889 "Config Server" || port_issues=true
+check_port 8888 "Config Server" || port_issues=true
 check_port 3001 "Create Subscription Service" || port_issues=true
 check_port 3000 "Main Server" || port_issues=true
 check_port 8080 "API Gateway" || port_issues=true
@@ -199,12 +217,144 @@ check_kafka_container() {
     docker rm -f kafka
 }
 
+# Function to clean up Zookeeper state to prevent Kafka broker ID conflicts
+cleanup_zookeeper_state() {
+    echo -e "${BLUE}Cleaning up Zookeeper state to prevent Kafka broker conflicts...${NC}"
+    
+    # Wait for Zookeeper to be ready
+    local max_attempts=30
+    local attempt=1
+    while [ $attempt -le $max_attempts ]; do
+        if docker exec zookeeper sh -c "echo srvr | nc localhost 2181" | grep -q "Zookeeper version"; then
+            echo -e "${GREEN}Zookeeper is ready for cleanup${NC}"
+            break
+        fi
+        echo -e "${YELLOW}Attempt $attempt/$max_attempts: Waiting for Zookeeper to be ready...${NC}"
+        sleep 2
+        attempt=$((attempt + 1))
+    done
+    
+    if [ $attempt -gt $max_attempts ]; then
+        echo -e "${RED}Zookeeper did not become ready. Skipping cleanup.${NC}"
+        return 1
+    fi
+    
+    # Clean up Kafka broker registrations
+    echo -e "${YELLOW}Removing existing Kafka broker registrations from Zookeeper...${NC}"
+    docker exec zookeeper zkCli.sh -server localhost:2181 rmr /brokers 2>/dev/null || true
+    docker exec zookeeper zkCli.sh -server localhost:2181 rmr /kafka 2>/dev/null || true
+    docker exec zookeeper zkCli.sh -server localhost:2181 rmr /admin 2>/dev/null || true
+    docker exec zookeeper zkCli.sh -server localhost:2181 rmr /config 2>/dev/null || true
+    
+    echo -e "${GREEN}Zookeeper cleanup completed${NC}"
+}
+
+# Function to initialize PostgreSQL databases with comprehensive checks
+initialize_databases() {
+    echo -e "${BLUE}Initializing PostgreSQL databases with comprehensive checks...${NC}"
+    
+    # Wait for PostgreSQL containers to be ready
+    local max_attempts=30
+    local attempt=1
+    
+    echo -e "${YELLOW}Waiting for PostgreSQL containers to be ready...${NC}"
+    while [ $attempt -le $max_attempts ]; do
+        if docker exec config-postgres-main-1 pg_isready -U ali.rezaiyan >/dev/null 2>&1 && \
+           docker exec config-postgres-create-1 pg_isready -U ali.rezaiyan >/dev/null 2>&1; then
+            echo -e "${GREEN}PostgreSQL containers are ready${NC}"
+            break
+        fi
+        echo -e "${YELLOW}Attempt $attempt/$max_attempts: Waiting for PostgreSQL to be ready...${NC}"
+        sleep 2
+        attempt=$((attempt + 1))
+    done
+    
+    if [ $attempt -gt $max_attempts ]; then
+        echo -e "${RED}PostgreSQL containers did not become ready. Skipping database initialization.${NC}"
+        return 1
+    fi
+    
+    # Check and create main database
+    echo -e "${YELLOW}Checking main database...${NC}"
+    if ! docker exec config-postgres-main-1 psql -U ali.rezaiyan -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='subscription_main_db'" | grep -q 1; then
+        echo -e "${YELLOW}Creating main database...${NC}"
+        docker exec config-postgres-main-1 psql -U ali.rezaiyan -d postgres -c "CREATE DATABASE subscription_main_db;"
+        echo -e "${GREEN}Main database created successfully${NC}"
+    else
+        echo -e "${GREEN}Main database already exists${NC}"
+    fi
+    
+    # Check and create create database
+    echo -e "${YELLOW}Checking create database...${NC}"
+    if ! docker exec config-postgres-create-1 psql -U ali.rezaiyan -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='subscription_create_db'" | grep -q 1; then
+        echo -e "${YELLOW}Creating create database...${NC}"
+        docker exec config-postgres-create-1 psql -U ali.rezaiyan -d postgres -c "CREATE DATABASE subscription_create_db;"
+        echo -e "${GREEN}Create database created successfully${NC}"
+    else
+        echo -e "${GREEN}Create database already exists${NC}"
+    fi
+    
+    # Check and create tables in main database
+    echo -e "${YELLOW}Checking tables in main database...${NC}"
+    if ! docker exec config-postgres-main-1 psql -U ali.rezaiyan -d subscription_main_db -tAc "SELECT 1 FROM information_schema.tables WHERE table_name='subscription'" | grep -q 1; then
+        echo -e "${YELLOW}Creating tables in main database...${NC}"
+        docker exec -i config-postgres-main-1 psql -U ali.rezaiyan -d subscription_main_db < database-setup/init-main-db.sql
+        echo -e "${GREEN}Main database tables created successfully${NC}"
+    else
+        echo -e "${GREEN}Main database tables already exist${NC}"
+    fi
+    
+    # Check and create tables in create database
+    echo -e "${YELLOW}Checking tables in create database...${NC}"
+    if ! docker exec config-postgres-create-1 psql -U ali.rezaiyan -d subscription_create_db -tAc "SELECT 1 FROM information_schema.tables WHERE table_name='subscription'" | grep -q 1; then
+        echo -e "${YELLOW}Creating tables in create database...${NC}"
+        docker exec -i config-postgres-create-1 psql -U ali.rezaiyan -d subscription_create_db < database-setup/init-create-db.sql
+        echo -e "${GREEN}Create database tables created successfully${NC}"
+    else
+        echo -e "${GREEN}Create database tables already exist${NC}"
+    fi
+    
+    # Verify database connectivity
+    echo -e "${YELLOW}Verifying database connectivity...${NC}"
+    if docker exec config-postgres-main-1 psql -U ali.rezaiyan -d subscription_main_db -c "SELECT 1;" >/dev/null 2>&1; then
+        echo -e "${GREEN}Main database connectivity verified${NC}"
+    else
+        echo -e "${RED}Main database connectivity failed${NC}"
+        return 1
+    fi
+    
+    if docker exec config-postgres-create-1 psql -U ali.rezaiyan -d subscription_create_db -c "SELECT 1;" >/dev/null 2>&1; then
+        echo -e "${GREEN}Create database connectivity verified${NC}"
+    else
+        echo -e "${RED}Create database connectivity failed${NC}"
+        return 1
+    fi
+    
+    echo -e "${GREEN}Database initialization and verification completed successfully${NC}"
+}
+
 # Place this function call before starting infrastructure services
 check_kafka_container
 
+# DEVELOPMENT ONLY: Always start with a clean Zookeeper/Kafka state (wipes all data)
+echo -e "${YELLOW}Wiping all Docker containers and volumes for a clean state (development only)...${NC}"
+docker-compose -f config/docker-compose.yml down -v
+
 # Start infrastructure services first
 echo -e "${BLUE}Starting infrastructure services...${NC}"
-docker-compose -f config/docker-compose.yml up -d zookeeper postgres-main postgres-create kafka
+docker-compose -f config/docker-compose.yml up -d zookeeper postgres-main postgres-create
+
+# Wait for PostgreSQL to be ready and initialize databases
+sleep 5
+initialize_databases
+
+# Wait for Zookeeper to be ready and clean up any stale state
+sleep 5
+cleanup_zookeeper_state
+
+# Now start Kafka after cleanup
+echo -e "${BLUE}Starting Kafka...${NC}"
+docker-compose -f config/docker-compose.yml up -d kafka
 
 # Wait for infrastructure to be ready
 echo -e "${BLUE}Waiting for infrastructure services to be ready...${NC}"
@@ -245,7 +395,7 @@ CONFIG_PID=$!
 echo "Config Server PID: $CONFIG_PID"
 
 # Wait for Config Server to be ready
-wait_for_service "http://localhost:8889/actuator/health" "Config Server"
+wait_for_service "http://localhost:8888/" "Config Server"
 
 # Start Create Subscription Service
 echo -e "${BLUE}Starting Create Subscription Service...${NC}"
@@ -284,13 +434,13 @@ WEBSITE_PID=$!
 cd ..
 echo "Website PID: $WEBSITE_PID"
 
-# Start the monitoring dashboard
-echo -e "${BLUE}Starting Monitoring Dashboard...${NC}"
-cd monitoring-app
-./gradlew run > ../logs/monitor.log 2>&1 &
-MONITOR_PID=$!
-cd ..
-echo "Monitoring Dashboard PID: $MONITOR_PID"
+# Start the monitoring dashboard (commented out - directory doesn't exist)
+# echo -e "${BLUE}Starting Monitoring Dashboard...${NC}"
+# cd monitoring-app
+# ./gradlew run > ../logs/monitor.log 2>&1 &
+# MONITOR_PID=$!
+# cd ..
+# echo "Monitoring Dashboard PID: $MONITOR_PID"
 
 # Wait a moment for services to start
 sleep 5
@@ -307,7 +457,6 @@ echo -e "  • Create Subscription Service: ${GREEN}http://localhost:3001${NC}"
 echo -e "  • Main Server: ${GREEN}http://localhost:3000${NC}"
 echo -e "  • API Gateway: ${GREEN}http://localhost:8080${NC}"
 echo -e "  • Website: ${GREEN}http://localhost:8081${NC}"
-echo -e "  • Monitoring Dashboard: ${GREEN}http://localhost:8082${NC}"
 
 echo -e "${BLUE}Log files are available in the logs/ directory${NC}"
 echo -e "${YELLOW}Press Ctrl+C to stop all services${NC}"

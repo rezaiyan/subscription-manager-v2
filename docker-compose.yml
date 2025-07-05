@@ -1,0 +1,294 @@
+services:
+  # Zookeeper - Required for Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_DATA_DIR: /var/lib/zookeeper/data
+      ZOOKEEPER_DATA_LOG_DIR: /var/lib/zookeeper/log
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_log:/var/lib/zookeeper/log
+    healthcheck:
+      test: ["CMD-SHELL", "echo ruok | nc localhost 2181 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 8
+      start_period: 60s
+    restart: unless-stopped
+
+  # Kafka - Message broker
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    hostname: kafka
+    container_name: kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 10 bash -c '</dev/tcp/localhost/9092' || exit 1"]
+      interval: 20s
+      timeout: 15s
+      retries: 8
+      start_period: 120s
+    restart: unless-stopped
+
+  # Main application database
+  postgres-main:
+    image: postgres:15
+    container_name: postgres-main
+    environment:
+      POSTGRES_DB: subscription_main_db
+      POSTGRES_USER: ali.rezaiyan
+      POSTGRES_PASSWORD: password123
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_main_data:/var/lib/postgresql/data
+      - ./database-setup/init-main-db.sql:/docker-entrypoint-initdb.d/init-main-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ali.rezaiyan -d subscription_main_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  # Create subscription service database
+  postgres-create:
+    image: postgres:15
+    container_name: postgres-create
+    environment:
+      POSTGRES_DB: subscription_create_db
+      POSTGRES_USER: ali.rezaiyan
+      POSTGRES_PASSWORD: password123
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_create_data:/var/lib/postgresql/data
+      - ./database-setup/init-create-db.sql:/docker-entrypoint-initdb.d/init-create-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ali.rezaiyan -d subscription_create_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  # Config Server - Must start first
+  config-server:
+    build:
+      context: .
+      dockerfile: server/config-server/Dockerfile
+    container_name: config-server
+    ports:
+      - "8889:8888"
+    depends_on:
+      postgres-main:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-main:5432/subscription_main_db
+      SPRING_DATASOURCE_USERNAME: ali.rezaiyan
+      SPRING_DATASOURCE_PASSWORD: password123
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 10 bash -c '</dev/tcp/localhost/8888' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+  # Eureka Server - Service discovery
+  eureka-server:
+    build:
+      context: .
+      dockerfile: server/eureka-server/Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    depends_on:
+      postgres-main:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-main:5432/subscription_main_db
+      SPRING_DATASOURCE_USERNAME: ali.rezaiyan
+      SPRING_DATASOURCE_PASSWORD: password123
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: false
+      EUREKA_CLIENT_FETCH_REGISTRY: false
+      EUREKA_SERVER_ENABLE_SELF_PRESERVATION: false
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 10 bash -c '</dev/tcp/localhost/8761' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+  # Create Subscription Service
+  create-subscription-service:
+    build:
+      context: .
+      dockerfile: server/create-subscription-service/Dockerfile
+    container_name: create-subscription-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres-create:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-create:5432/subscription_create_db
+      SPRING_DATASOURCE_USERNAME: ali.rezaiyan
+      SPRING_DATASOURCE_PASSWORD: password123
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: earliest
+      SPRING_KAFKA_CONSUMER_GROUP_ID: subscription-group
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    restart: unless-stopped
+
+  # Main Subscription Manager Service
+  subscription-manager:
+    build:
+      context: .
+      dockerfile: server/main-service/Dockerfile
+    container_name: subscription-manager
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres-create:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      create-subscription-service:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-create:5432/subscription_create_db
+      SPRING_DATASOURCE_USERNAME: ali.rezaiyan
+      SPRING_DATASOURCE_PASSWORD: password123
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: earliest
+      SPRING_KAFKA_CONSUMER_GROUP_ID: subscription-manager-group
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    restart: unless-stopped
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: server/api-gateway/Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      subscription-manager:
+        condition: service_healthy
+      create-subscription-service:
+        condition: service_healthy
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_ENABLED: true
+      SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_LOWERCASE_SERVICE_ID: true
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+  # Frontend Website
+  website:
+    build:
+      context: ./composeApp
+      dockerfile: Dockerfile
+    container_name: website
+    ports:
+      - "8081:3002"
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+    environment:
+      - API_BASE_URL=http://api-gateway:8080
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3002/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+volumes:
+  postgres_main_data:
+    driver: local
+  postgres_create_data:
+    driver: local
+  kafka_data:
+    driver: local
+  zookeeper_data:
+    driver: local
+  zookeeper_log:
+    driver: local
+
+networks:
+  default:
+    name: subscription-manager-network
+    driver: bridge 

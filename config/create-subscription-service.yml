@@ -1,0 +1,41 @@
+# Create Subscription Service Configuration
+spring:
+  application:
+    name: create-subscription-service
+  datasource:
+    url: jdbc:postgresql://postgres-create:5432/subscription_create_db
+    username: ali.rezaiyan
+    password: password123
+    driver-class-name: org.postgresql.Driver
+  kafka:
+    bootstrap-servers: kafka:29092
+    consumer:
+      auto-offset-reset: earliest
+      group-id: create-subscription-group
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  cloud:
+    config:
+      uri: http://config-server:8888
+      fail-fast: true
+
+# Eureka configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+# Server configuration
+server:
+  port: 3001
+
+# Logging
+logging:
+  level:
+    com.github.rezaiyan: DEBUG
+    org.springframework.kafka: DEBUG 

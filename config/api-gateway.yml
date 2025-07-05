@@ -1,0 +1,42 @@
+# API Gateway Configuration
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: subscription-manager
+          uri: lb://subscription-manager
+          predicates:
+            - Path=/api/subscriptions/**
+        - id: create-subscription-service
+          uri: lb://create-subscription-service
+          predicates:
+            - Path=/api/create-subscription/**
+    config:
+      uri: http://config-server:8888
+      fail-fast: true
+
+# Eureka configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+# Server configuration
+server:
+  port: 8080
+
+# Logging
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    com.github.rezaiyan: DEBUG 

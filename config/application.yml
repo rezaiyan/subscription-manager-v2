@@ -1,0 +1,44 @@
+# Base application configuration for Subscription Manager
+spring:
+  application:
+    name: subscription-manager
+  datasource:
+    url: jdbc:postgresql://localhost:5432/subscription_main_db
+    username: ali.rezaiyan
+    password: password123
+    driver-class-name: org.postgresql.Driver
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+      group-id: subscription-group
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  cloud:
+    config:
+      uri: http://localhost:8889
+      fail-fast: true
+
+# Eureka configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+# Logging configuration
+logging:
+  level:
+    com.github.rezaiyan: DEBUG
+    org.springframework.cloud: DEBUG
+    org.springframework.kafka: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Server configuration
+server:
+  port: 3000 

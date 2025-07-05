@@ -1,0 +1,28 @@
+# Eureka Server Configuration
+spring:
+  application:
+    name: eureka-server
+  datasource:
+    url: jdbc:postgresql://postgres-main:5432/subscription_main_db
+    username: ali.rezaiyan
+    password: password123
+    driver-class-name: org.postgresql.Driver
+
+# Eureka Server specific configuration
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  server:
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 1000
+
+# Server configuration
+server:
+  port: 8761
+
+# Logging
+logging:
+  level:
+    com.netflix.eureka: DEBUG
+    com.netflix.discovery: DEBUG 

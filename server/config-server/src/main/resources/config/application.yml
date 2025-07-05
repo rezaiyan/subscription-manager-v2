@@ -1,0 +1,13 @@
+# Sample config for Subscription Manager services
+---
+spring:
+  application:
+    name: subscription-manager
+  datasource:
+    url: jdbc:postgresql://localhost:5432/subscription_main_db
+    username: ali.rezaiyan
+    password: password123
+  kafka:
+    bootstrap-servers: localhost:9092
+
+# Add more service-specific config as needed 

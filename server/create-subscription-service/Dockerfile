@@ -2,7 +2,7 @@ FROM openjdk:21-jdk-slim
 
 WORKDIR /app
 
-COPY create-subscription-service/build/libs/*.jar app.jar
+COPY server/create-subscription-service/build/libs/*.jar app.jar
 
 EXPOSE 3001
 

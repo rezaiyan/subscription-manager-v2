@@ -66,7 +66,6 @@ actual fun App() {
         viewModel?.loadSubscriptions()
         println("🔄 WASM App: Loading subscriptions...")
 
-        kotlinx.coroutines.delay(1000)
         isLoading = false
         println("✅ WASM App: Loading screen completed")
     }
@@ -105,16 +104,7 @@ actual fun App() {
 
 @Composable
 private fun LoadingScreen() {
-    val infiniteTransition = rememberInfiniteTransition(label = "loading")
-    val alpha by infiniteTransition.animateFloat(
-        initialValue = 0.3f,
-        targetValue = 1.0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "alpha"
-    )
+    rememberInfiniteTransition(label = "loading")
 
     Box(
         modifier = Modifier

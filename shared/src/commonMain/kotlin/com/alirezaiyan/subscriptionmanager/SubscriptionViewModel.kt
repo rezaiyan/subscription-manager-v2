@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 
@@ -20,7 +19,6 @@ class SubscriptionViewModel(
 
     // Add dialog state
     private val _showAddDialog = MutableStateFlow(false)
-    val showAddDialog: StateFlow<Boolean> = _showAddDialog.asStateFlow()
 
     init {
         println("📱 SubscriptionViewModel initialized")
@@ -48,18 +46,6 @@ class SubscriptionViewModel(
         }
     }
 
-    fun addSubscription(subscription: Subscription) {
-        println("➕ ViewModel: Adding subscription - Name: ${subscription.name}, Price: ${subscription.price}, Frequency: ${subscription.frequency}")
-        coroutineScope.launch {
-            val success = repository.createSubscription(subscription)
-            if (success) {
-                println("✅ ViewModel: Successfully created subscription")
-            } else {
-                println("❌ ViewModel: Failed to create subscription")
-            }
-        }
-    }
-
     fun createSubscription(
         name: String,
         description: String?,
@@ -73,6 +59,7 @@ class SubscriptionViewModel(
                 description = description,
                 price = amount,
                 frequency = frequency,
+                isActive = true,
                 startDate = getCurrentTimestamp(),
                 monthlyAmount = if (frequency == SubscriptionFrequency.MONTHLY) amount else amount / 12.0,
                 yearlyAmount = if (frequency == SubscriptionFrequency.YEARLY) amount else amount * 12.0

@@ -1,4 +1,4 @@
-# Subscription Manager v2
+clear# Subscription Manager v2
 
 A comprehensive subscription management system built with **Kotlin Multiplatform** frontend and **Spring Boot microservices** backend. This project demonstrates modern microservice architecture with event-driven communication, service discovery, and multi-platform support.
 

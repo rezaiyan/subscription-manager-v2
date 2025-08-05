@@ -91,13 +91,19 @@ class ApiServiceWasm : ApiService {
     }
 
     override suspend fun createSubscription(subscription: Subscription): Subscription {
+        val url = "$baseUrl/subscriptions"
+        println("📡 Making POST request to: $url")
+        println("📦 Request body: $subscription")
+
         return try {
-            client.post("$baseUrl/api/subscriptions") {
+            val response = client.post(url) {
                 contentType(ContentType.Application.Json)
                 setBody(subscription)
-            }.body()
+            }
+            println("✅ POST $url - Success (${response.status})")
+            response.body()
         } catch (e: Exception) {
-            println("❌ WASM: POST /api/subscriptions - Failed: ${e.message}")
+            println("❌ POST $url - Failed: ${e.message}")
             e.printStackTrace()
             throw e
         }
